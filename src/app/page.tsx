@@ -76,7 +76,7 @@ export default async function HomePage() {
       </div>
 
       {/* Stats Section */}
-      <div className="py-12" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
+      <div className="py-12">
         <div className="container-custom">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="card-elevated p-6">
@@ -106,7 +106,7 @@ export default async function HomePage() {
       </div>
 
       {/* Main Content */}
-      <div className="section-padding" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
+      <div className="section-padding">
         <div className="container-custom">
           {/* Show membership prompt for non-members */}
           {!isMember && <MembershipPrompt className="mb-8" />}
