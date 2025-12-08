@@ -165,13 +165,13 @@ export default function SubmitJobPage() {
   // Render phone lookup step
   if (step === 'phone') {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
+      <div className="min-h-screen py-12">
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-white">
               Post a Job Opportunity
             </h1>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-white/80">
               First, let&apos;s see if we have your information on file
             </p>
           </div>
@@ -220,20 +220,20 @@ export default function SubmitJobPage() {
 
   // Render full form
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => setStep('phone')}
-            className="text-blue-600 hover:text-blue-700 mb-4 flex items-center"
+            className="text-white hover:text-white/80 mb-4 flex items-center"
           >
             ← Back to phone lookup
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-white">
             Post a Job or Volunteer Opportunity
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-white/80">
             Share opportunities with Missouri Young Democrats members
           </p>
           {lookupData?.found && (
