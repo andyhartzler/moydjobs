@@ -173,8 +173,8 @@ export default function SubmitJobPage() {
           >
             ← Back to Jobs
           </Link>
-          <h1 className="text-[1.35rem] sm:text-2xl md:text-3xl font-bold text-white leading-tight">
-            Post a Job or Volunteer Opportunity
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+            Post an Opportunity
           </h1>
           <p className="mt-2 text-white/80">
             Share opportunities with Missouri Young Democrats members
