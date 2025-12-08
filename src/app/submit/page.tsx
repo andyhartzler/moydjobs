@@ -173,7 +173,7 @@ export default function SubmitJobPage() {
           >
             ← Back to Jobs
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white whitespace-nowrap">
+          <h1 className="text-[1.35rem] sm:text-2xl md:text-3xl font-bold text-white leading-tight">
             Post a Job or Volunteer Opportunity
           </h1>
           <p className="mt-2 text-white/80">
@@ -191,7 +191,7 @@ export default function SubmitJobPage() {
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-8 space-y-6">
           {/* Position Details */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Position Details</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Position Details</h2>
 
             <div className="space-y-4">
               <div>
@@ -301,7 +301,7 @@ export default function SubmitJobPage() {
 
           {/* Compensation */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Compensation</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Compensation</h2>
 
             <div className="space-y-4">
               <div className="flex items-center">
@@ -356,7 +356,7 @@ export default function SubmitJobPage() {
 
           {/* Requirements */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Requirements &amp; Qualifications</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Requirements &amp; Qualifications</h2>
 
             <div className="space-y-4">
               <div>
@@ -393,7 +393,7 @@ export default function SubmitJobPage() {
 
           {/* Contact Information */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Application &amp; Contact</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Application &amp; Contact</h2>
 
             <div className="space-y-4">
               <div>
@@ -493,7 +493,7 @@ export default function SubmitJobPage() {
 
           {/* Your Information */}
           <div className="pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Your Information</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Information</h2>
 
             <div className="space-y-4">
               {/* Phone Number - Always visible */}
