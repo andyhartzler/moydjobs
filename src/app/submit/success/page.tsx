@@ -15,7 +15,7 @@ export default function SubmitSuccessPage() {
         </h2>
 
         <p className="text-gray-600 mb-6">
-          Thank you for posting an opportunity with Missouri Young Democrats. Our team will review your submission and you&apos;ll receive an email once it&apos;s approved.
+          Thank you for posting an opportunity with Missouri Young Democrats. You&apos;ve been added to our mailing list and will receive updates on your submission status.
         </p>
 
         <div className="space-y-3">
