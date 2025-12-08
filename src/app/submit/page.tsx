@@ -8,6 +8,7 @@ import Link from 'next/link'
 export default function SubmitJobPage() {
   const [lookupData, setLookupData] = useState<any>(null)
   const [lookingUp, setLookingUp] = useState(false)
+  const [phoneLookupDone, setPhoneLookupDone] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -84,6 +85,7 @@ export default function SubmitJobPage() {
       // Don't show error for lookup failures - just silently fail
     } finally {
       setLookingUp(false)
+      setPhoneLookupDone(true)
     }
   }
 
@@ -171,7 +173,7 @@ export default function SubmitJobPage() {
           >
             ← Back to Jobs
           </Link>
-          <h1 className="text-3xl font-bold text-white">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white whitespace-nowrap">
             Post a Job or Volunteer Opportunity
           </h1>
           <p className="mt-2 text-white/80">
@@ -189,7 +191,7 @@ export default function SubmitJobPage() {
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-8 space-y-6">
           {/* Position Details */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Position Details</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Position Details</h2>
 
             <div className="space-y-4">
               <div>
@@ -299,7 +301,7 @@ export default function SubmitJobPage() {
 
           {/* Compensation */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Compensation</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Compensation</h2>
 
             <div className="space-y-4">
               <div className="flex items-center">
@@ -354,7 +356,7 @@ export default function SubmitJobPage() {
 
           {/* Requirements */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Requirements &amp; Qualifications</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Requirements &amp; Qualifications</h2>
 
             <div className="space-y-4">
               <div>
@@ -391,7 +393,7 @@ export default function SubmitJobPage() {
 
           {/* Contact Information */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Application &amp; Contact</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Application &amp; Contact</h2>
 
             <div className="space-y-4">
               <div>
@@ -491,185 +493,190 @@ export default function SubmitJobPage() {
 
           {/* Your Information */}
           <div className="pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Information</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Enter your phone number and we&apos;ll automatically fill in your information if you&apos;re already in our system.
-            </p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 whitespace-nowrap">Your Information</h2>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="submitter_phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="tel"
-                      id="submitter_phone"
-                      name="submitter_phone"
-                      required
-                      value={formData.submitter_phone}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="(555) 123-4567"
-                    />
-                    {lookingUp && (
-                      <div className="absolute right-3 top-2">
-                        <div className="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                      </div>
-                    )}
-                  </div>
-                  {lookupData?.found && (
-                    <p className="mt-1 text-sm text-green-600">
-                      ✓ Found your information!
-                    </p>
+              {/* Phone Number - Always visible */}
+              <div>
+                <label htmlFor="submitter_phone" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="tel"
+                    id="submitter_phone"
+                    name="submitter_phone"
+                    required
+                    value={formData.submitter_phone}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="(555) 123-4567"
+                  />
+                  {lookingUp && (
+                    <div className="absolute right-3 top-2">
+                      <div className="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                    </div>
                   )}
                 </div>
-
-                <div>
-                  <label htmlFor="submitter_date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
-                    Date of Birth
-                  </label>
-                  <input
-                    type="date"
-                    id="submitter_date_of_birth"
-                    name="submitter_date_of_birth"
-                    value={formData.submitter_date_of_birth}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
+                {lookupData?.found && (
+                  <p className="mt-1 text-sm text-green-600">
+                    Found your information!
+                  </p>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="submitter_name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Your Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="submitter_name"
-                    name="submitter_name"
-                    required
-                    value={formData.submitter_name}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
+              {/* Rest of fields - Only visible after phone lookup */}
+              {phoneLookupDone && (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="submitter_name" className="block text-sm font-medium text-gray-700 mb-1">
+                        Your Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="submitter_name"
+                        name="submitter_name"
+                        required
+                        value={formData.submitter_name}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
 
-                <div>
-                  <label htmlFor="submitter_email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Your Email <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="submitter_email"
-                    name="submitter_email"
-                    required
-                    value={formData.submitter_email}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
+                    <div>
+                      <label htmlFor="submitter_email" className="block text-sm font-medium text-gray-700 mb-1">
+                        Your Email <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        id="submitter_email"
+                        name="submitter_email"
+                        required
+                        value={formData.submitter_email}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
 
-              <div>
-                <label htmlFor="submitter_address" className="block text-sm font-medium text-gray-700 mb-1">
-                  Street Address
-                </label>
-                <input
-                  type="text"
-                  id="submitter_address"
-                  name="submitter_address"
-                  value={formData.submitter_address}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="submitter_date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
+                        Date of Birth <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        id="submitter_date_of_birth"
+                        name="submitter_date_of_birth"
+                        required
+                        value={formData.submitter_date_of_birth}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label htmlFor="submitter_city" className="block text-sm font-medium text-gray-700 mb-1">
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    id="submitter_city"
-                    name="submitter_city"
-                    value={formData.submitter_city}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
+                    <div>
+                      <label htmlFor="submitter_zip_code" className="block text-sm font-medium text-gray-700 mb-1">
+                        ZIP Code <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="submitter_zip_code"
+                        name="submitter_zip_code"
+                        required
+                        value={formData.submitter_zip_code}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        maxLength={5}
+                      />
+                    </div>
+                  </div>
 
-                <div>
-                  <label htmlFor="submitter_state" className="block text-sm font-medium text-gray-700 mb-1">
-                    State
-                  </label>
-                  <select
-                    id="submitter_state"
-                    name="submitter_state"
-                    value={formData.submitter_state}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="">Select...</option>
-                    <option value="MO">Missouri</option>
-                    <option value="KS">Kansas</option>
-                    <option value="IL">Illinois</option>
-                    <option value="IA">Iowa</option>
-                    <option value="AR">Arkansas</option>
-                    <option value="OK">Oklahoma</option>
-                    <option value="NE">Nebraska</option>
-                    <option value="TN">Tennessee</option>
-                    <option value="KY">Kentucky</option>
-                  </select>
-                </div>
+                  <div>
+                    <label htmlFor="submitter_address" className="block text-sm font-medium text-gray-700 mb-1">
+                      Street Address
+                    </label>
+                    <input
+                      type="text"
+                      id="submitter_address"
+                      name="submitter_address"
+                      value={formData.submitter_address}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
 
-                <div>
-                  <label htmlFor="submitter_zip_code" className="block text-sm font-medium text-gray-700 mb-1">
-                    ZIP Code
-                  </label>
-                  <input
-                    type="text"
-                    id="submitter_zip_code"
-                    name="submitter_zip_code"
-                    value={formData.submitter_zip_code}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    maxLength={5}
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="submitter_city" className="block text-sm font-medium text-gray-700 mb-1">
+                        City
+                      </label>
+                      <input
+                        type="text"
+                        id="submitter_city"
+                        name="submitter_city"
+                        value={formData.submitter_city}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
 
-              <div>
-                <label htmlFor="submitter_employer" className="block text-sm font-medium text-gray-700 mb-1">
-                  Employer (Optional)
-                </label>
-                <input
-                  type="text"
-                  id="submitter_employer"
-                  name="submitter_employer"
-                  value={formData.submitter_employer}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+                    <div>
+                      <label htmlFor="submitter_state" className="block text-sm font-medium text-gray-700 mb-1">
+                        State
+                      </label>
+                      <select
+                        id="submitter_state"
+                        name="submitter_state"
+                        value={formData.submitter_state}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">Select...</option>
+                        <option value="MO">Missouri</option>
+                        <option value="KS">Kansas</option>
+                        <option value="IL">Illinois</option>
+                        <option value="IA">Iowa</option>
+                        <option value="AR">Arkansas</option>
+                        <option value="OK">Oklahoma</option>
+                        <option value="NE">Nebraska</option>
+                        <option value="TN">Tennessee</option>
+                        <option value="KY">Kentucky</option>
+                      </select>
+                    </div>
+                  </div>
 
-              <div>
-                <label htmlFor="submitter_organization" className="block text-sm font-medium text-gray-700 mb-1">
-                  Organization
-                </label>
-                <input
-                  type="text"
-                  id="submitter_organization"
-                  name="submitter_organization"
-                  value={formData.submitter_organization}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Your organization (if different from the job posting organization)"
-                />
-              </div>
+                  <div>
+                    <label htmlFor="submitter_employer" className="block text-sm font-medium text-gray-700 mb-1">
+                      Employer
+                    </label>
+                    <input
+                      type="text"
+                      id="submitter_employer"
+                      name="submitter_employer"
+                      value={formData.submitter_employer}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="submitter_organization" className="block text-sm font-medium text-gray-700 mb-1">
+                      Organization
+                    </label>
+                    <input
+                      type="text"
+                      id="submitter_organization"
+                      name="submitter_organization"
+                      value={formData.submitter_organization}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Your organization (if different from the job posting organization)"
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
