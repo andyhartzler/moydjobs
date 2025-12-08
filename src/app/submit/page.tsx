@@ -5,12 +5,17 @@ import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 export default function SubmitJobPage() {
+  const [step, setStep] = useState<'phone' | 'form'>('phone')
+  const [lookupData, setLookupData] = useState<any>(null)
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [lookingUp, setLookingUp] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
   const [formData, setFormData] = useState({
+    // Job details
     title: '',
     organization: '',
     description: '',
@@ -27,12 +32,127 @@ export default function SubmitJobPage() {
     contact_phone: '',
     application_url: '',
     application_instructions: '',
+    expires_at: '',
+    submitter_organization: '',
+
+    // Submitter personal info
     submitter_name: '',
     submitter_email: '',
-    submitter_organization: '',
     submitter_phone: '',
-    expires_at: '',
+    submitter_address: '',
+    submitter_city: '',
+    submitter_state: '',
+    submitter_zip_code: '',
+    submitter_date_of_birth: '',
+    submitter_employer: '',
   })
+
+  // Handle phone lookup
+  async function handlePhoneLookup(e: React.FormEvent) {
+    e.preventDefault()
+    setLookingUp(true)
+    setError(null)
+
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-job', {
+        body: {
+          action: 'lookup',
+          phone: phoneNumber
+        }
+      })
+
+      if (error) throw error
+
+      // Auto-fill form with found data
+      if (data.found) {
+        setLookupData(data)
+        setFormData(prev => ({
+          ...prev,
+          submitter_name: data.name || '',
+          submitter_email: data.email || '',
+          submitter_phone: phoneNumber,
+          submitter_address: data.address || '',
+          submitter_city: data.city || '',
+          submitter_state: data.state || '',
+          submitter_zip_code: data.zip_code || '',
+          submitter_date_of_birth: data.date_of_birth || '',
+          submitter_employer: data.employer || '',
+        }))
+      } else {
+        // Not found - just set the phone number
+        setFormData(prev => ({
+          ...prev,
+          submitter_phone: phoneNumber
+        }))
+      }
+
+      // Move to form step
+      setStep('form')
+    } catch (err: any) {
+      console.error('Lookup error:', err)
+      setError(err.message || 'Failed to lookup information')
+    } finally {
+      setLookingUp(false)
+    }
+  }
+
+  // Handle form submission
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSubmitting(true)
+    setError(null)
+
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-job', {
+        body: {
+          action: 'submit',
+          job: {
+            title: formData.title,
+            organization: formData.organization,
+            description: formData.description,
+            job_type: formData.job_type,
+            location: formData.location,
+            location_type: formData.location_type,
+            is_paid: formData.is_paid,
+            salary_range: formData.salary_range,
+            hourly_rate: formData.hourly_rate,
+            requirements: formData.requirements,
+            qualifications: formData.qualifications,
+            contact_email: formData.contact_email,
+            contact_name: formData.contact_name,
+            contact_phone: formData.contact_phone,
+            application_url: formData.application_url,
+            application_instructions: formData.application_instructions,
+            expires_at: formData.expires_at || null,
+            submitter_organization: formData.submitter_organization,
+          },
+          submitter: {
+            name: formData.submitter_name,
+            email: formData.submitter_email,
+            phone: formData.submitter_phone,
+            address: formData.submitter_address,
+            city: formData.submitter_city,
+            state: formData.submitter_state,
+            zip_code: formData.submitter_zip_code,
+            date_of_birth: formData.submitter_date_of_birth,
+            employer: formData.submitter_employer,
+            member_id: lookupData?.member_id,
+            donor_id: lookupData?.donor_id,
+            subscriber_id: lookupData?.subscriber_id,
+          }
+        }
+      })
+
+      if (error) throw error
+
+      // Redirect to success page
+      router.push('/submit/success')
+    } catch (err: any) {
+      console.error('Submit error:', err)
+      setError(err.message || 'Failed to submit job posting')
+      setSubmitting(false)
+    }
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value, type } = e.target
@@ -42,48 +162,87 @@ export default function SubmitJobPage() {
     }))
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setSubmitting(true)
-    setError(null)
+  // Render phone lookup step
+  if (step === 'phone') {
+    return (
+      <div className="min-h-screen py-12">
+        <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-white">
+              Post a Job Opportunity
+            </h1>
+            <p className="mt-2 text-white/80">
+              First, let&apos;s see if we have your information on file
+            </p>
+          </div>
 
-    try {
-      // Generate slug from title
-      const slug = formData.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '')
+          <form onSubmit={handlePhoneLookup} className="bg-white rounded-lg shadow p-8">
+            <div className="mb-6">
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                Your Phone Number <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="(555) 123-4567"
+                required
+              />
+              <p className="mt-2 text-sm text-gray-500">
+                We&apos;ll use this to auto-fill your information if you&apos;re already in our system
+              </p>
+            </div>
 
-      const { error: insertError } = await supabase
-        .from('jobs')
-        .insert([{
-          ...formData,
-          slug,
-          status: 'pending',
-          expires_at: formData.expires_at || null,
-        }])
+            {error && (
+              <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-red-800">{error}</p>
+              </div>
+            )}
 
-      if (insertError) throw insertError
+            <button
+              type="submit"
+              disabled={lookingUp || !phoneNumber}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {lookingUp ? 'Looking up...' : 'Continue'}
+            </button>
 
-      router.push('/submit/success')
-    } catch (err: any) {
-      console.error('Error submitting job:', err)
-      setError(err.message || 'Failed to submit job posting')
-      setSubmitting(false)
-    }
+            <p className="mt-4 text-xs text-gray-500 text-center">
+              Don&apos;t worry - you&apos;ll be able to review and edit all information before submitting
+            </p>
+          </form>
+        </div>
+      </div>
+    )
   }
 
+  // Render full form
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <button
+            onClick={() => setStep('phone')}
+            className="text-white hover:text-white/80 mb-4 flex items-center"
+          >
+            ← Back to phone lookup
+          </button>
+          <h1 className="text-3xl font-bold text-white">
             Post a Job or Volunteer Opportunity
           </h1>
-          <p className="mt-2 text-gray-600">
-            Share opportunities with Missouri Young Democrats members. All postings are reviewed before publication.
+          <p className="mt-2 text-white/80">
+            Share opportunities with Missouri Young Democrats members
           </p>
+          {lookupData?.found && (
+            <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+              <p className="text-green-800">
+                ✓ We found your information! Please review and update if needed.
+              </p>
+            </div>
+          )}
         </div>
 
         {error && (
@@ -400,7 +559,7 @@ export default function SubmitJobPage() {
           <div className="pb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Information</h2>
             <p className="text-sm text-gray-600 mb-4">
-              This information is for our records only and will not be displayed publicly.
+              Please review and complete your contact information
             </p>
 
             <div className="space-y-4">
@@ -435,6 +594,135 @@ export default function SubmitJobPage() {
                   />
                 </div>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="submitter_phone" className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="submitter_phone"
+                    name="submitter_phone"
+                    required
+                    value={formData.submitter_phone}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="submitter_date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
+                    Date of Birth
+                  </label>
+                  <input
+                    type="date"
+                    id="submitter_date_of_birth"
+                    name="submitter_date_of_birth"
+                    value={formData.submitter_date_of_birth}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="submitter_address" className="block text-sm font-medium text-gray-700 mb-1">
+                  Street Address
+                </label>
+                <input
+                  type="text"
+                  id="submitter_address"
+                  name="submitter_address"
+                  value={formData.submitter_address}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="submitter_city" className="block text-sm font-medium text-gray-700 mb-1">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    id="submitter_city"
+                    name="submitter_city"
+                    value={formData.submitter_city}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="submitter_state" className="block text-sm font-medium text-gray-700 mb-1">
+                    State
+                  </label>
+                  <select
+                    id="submitter_state"
+                    name="submitter_state"
+                    value={formData.submitter_state}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Select...</option>
+                    <option value="MO">Missouri</option>
+                    <option value="KS">Kansas</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IA">Iowa</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="NE">Nebraska</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="KY">Kentucky</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="submitter_zip_code" className="block text-sm font-medium text-gray-700 mb-1">
+                    ZIP Code
+                  </label>
+                  <input
+                    type="text"
+                    id="submitter_zip_code"
+                    name="submitter_zip_code"
+                    value={formData.submitter_zip_code}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    maxLength={5}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="submitter_employer" className="block text-sm font-medium text-gray-700 mb-1">
+                  Employer (Optional)
+                </label>
+                <input
+                  type="text"
+                  id="submitter_employer"
+                  name="submitter_employer"
+                  value={formData.submitter_employer}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="submitter_organization" className="block text-sm font-medium text-gray-700 mb-1">
+                  Organization
+                </label>
+                <input
+                  type="text"
+                  id="submitter_organization"
+                  name="submitter_organization"
+                  value={formData.submitter_organization}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Your organization (if different from the job posting organization)"
+                />
+              </div>
             </div>
           </div>
 
@@ -448,7 +736,7 @@ export default function SubmitJobPage() {
               {submitting ? 'Submitting...' : 'Submit for Review'}
             </button>
             <p className="mt-3 text-sm text-gray-500 text-center">
-              All job postings are reviewed by our team before publication. You&apos;ll receive an email once your posting is approved.
+              All job postings are reviewed before publication. You&apos;ll receive an email once approved.
             </p>
           </div>
         </form>

@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function SubmitSuccessPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
         <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
           <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -15,7 +15,7 @@ export default function SubmitSuccessPage() {
         </h2>
 
         <p className="text-gray-600 mb-6">
-          Thank you for posting an opportunity with Missouri Young Democrats. Our team will review your submission and you&apos;ll receive an email once it&apos;s approved.
+          Thank you for posting an opportunity with Missouri Young Democrats. You&apos;ve been added to our mailing list and will receive updates on your submission status.
         </p>
 
         <div className="space-y-3">
