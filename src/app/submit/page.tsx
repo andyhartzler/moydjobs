@@ -3,11 +3,10 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function SubmitJobPage() {
-  const [step, setStep] = useState<'phone' | 'form'>('phone')
   const [lookupData, setLookupData] = useState<any>(null)
-  const [phoneNumber, setPhoneNumber] = useState('')
   const [lookingUp, setLookingUp] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -47,9 +46,10 @@ export default function SubmitJobPage() {
     submitter_employer: '',
   })
 
-  // Handle phone lookup
-  async function handlePhoneLookup(e: React.FormEvent) {
-    e.preventDefault()
+  // Handle phone lookup when user enters phone number
+  async function handlePhoneLookup(phone: string) {
+    if (!phone || phone.length < 10) return
+
     setLookingUp(true)
     setError(null)
 
@@ -57,7 +57,7 @@ export default function SubmitJobPage() {
       const { data, error } = await supabase.functions.invoke('submit-job', {
         body: {
           action: 'lookup',
-          phone: phoneNumber
+          phone: phone
         }
       })
 
@@ -68,29 +68,20 @@ export default function SubmitJobPage() {
         setLookupData(data)
         setFormData(prev => ({
           ...prev,
-          submitter_name: data.name || '',
-          submitter_email: data.email || '',
-          submitter_phone: phoneNumber,
-          submitter_address: data.address || '',
-          submitter_city: data.city || '',
-          submitter_state: data.state || '',
-          submitter_zip_code: data.zip_code || '',
-          submitter_date_of_birth: data.date_of_birth || '',
-          submitter_employer: data.employer || '',
-        }))
-      } else {
-        // Not found - just set the phone number
-        setFormData(prev => ({
-          ...prev,
-          submitter_phone: phoneNumber
+          submitter_name: data.name || prev.submitter_name,
+          submitter_email: data.email || prev.submitter_email,
+          submitter_phone: phone,
+          submitter_address: data.address || prev.submitter_address,
+          submitter_city: data.city || prev.submitter_city,
+          submitter_state: data.state || prev.submitter_state,
+          submitter_zip_code: data.zip_code || prev.submitter_zip_code,
+          submitter_date_of_birth: data.date_of_birth || prev.submitter_date_of_birth,
+          submitter_employer: data.employer || prev.submitter_employer,
         }))
       }
-
-      // Move to form step
-      setStep('form')
     } catch (err: any) {
       console.error('Lookup error:', err)
-      setError(err.message || 'Failed to lookup information')
+      // Don't show error for lookup failures - just silently fail
     } finally {
       setLookingUp(false)
     }
@@ -156,93 +147,36 @@ export default function SubmitJobPage() {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value, type } = e.target
+    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      [name]: newValue
     }))
+
+    // Trigger phone lookup when phone number is entered
+    if (name === 'submitter_phone' && typeof newValue === 'string' && newValue.length >= 10) {
+      handlePhoneLookup(newValue)
+    }
   }
 
-  // Render phone lookup step
-  if (step === 'phone') {
-    return (
-      <div className="min-h-screen py-12">
-        <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white">
-              Post a Job Opportunity
-            </h1>
-            <p className="mt-2 text-white/80">
-              First, let&apos;s see if we have your information on file
-            </p>
-          </div>
-
-          <form onSubmit={handlePhoneLookup} className="bg-white rounded-lg shadow p-8">
-            <div className="mb-6">
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                Your Phone Number <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="(555) 123-4567"
-                required
-              />
-              <p className="mt-2 text-sm text-gray-500">
-                We&apos;ll use this to auto-fill your information if you&apos;re already in our system
-              </p>
-            </div>
-
-            {error && (
-              <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-red-800">{error}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={lookingUp || !phoneNumber}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {lookingUp ? 'Looking up...' : 'Continue'}
-            </button>
-
-            <p className="mt-4 text-xs text-gray-500 text-center">
-              Don&apos;t worry - you&apos;ll be able to review and edit all information before submitting
-            </p>
-          </form>
-        </div>
-      </div>
-    )
-  }
-
-  // Render full form
   return (
     <div className="min-h-screen py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <button
-            onClick={() => setStep('phone')}
+          <Link
+            href="/"
             className="text-white hover:text-white/80 mb-4 flex items-center"
           >
-            ← Back to phone lookup
-          </button>
+            ← Back to Jobs
+          </Link>
           <h1 className="text-3xl font-bold text-white">
             Post a Job or Volunteer Opportunity
           </h1>
           <p className="mt-2 text-white/80">
             Share opportunities with Missouri Young Democrats members
           </p>
-          {lookupData?.found && (
-            <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-green-800">
-                ✓ We found your information! Please review and update if needed.
-              </p>
-            </div>
-          )}
         </div>
 
         {error && (
@@ -559,10 +493,54 @@ export default function SubmitJobPage() {
           <div className="pb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Information</h2>
             <p className="text-sm text-gray-600 mb-4">
-              Please review and complete your contact information
+              Enter your phone number and we&apos;ll automatically fill in your information if you&apos;re already in our system.
             </p>
 
             <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="submitter_phone" className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      id="submitter_phone"
+                      name="submitter_phone"
+                      required
+                      value={formData.submitter_phone}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="(555) 123-4567"
+                    />
+                    {lookingUp && (
+                      <div className="absolute right-3 top-2">
+                        <div className="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                      </div>
+                    )}
+                  </div>
+                  {lookupData?.found && (
+                    <p className="mt-1 text-sm text-green-600">
+                      ✓ Found your information!
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="submitter_date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
+                    Date of Birth
+                  </label>
+                  <input
+                    type="date"
+                    id="submitter_date_of_birth"
+                    name="submitter_date_of_birth"
+                    value={formData.submitter_date_of_birth}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="submitter_name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -589,37 +567,6 @@ export default function SubmitJobPage() {
                     name="submitter_email"
                     required
                     value={formData.submitter_email}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="submitter_phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    id="submitter_phone"
-                    name="submitter_phone"
-                    required
-                    value={formData.submitter_phone}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="submitter_date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
-                    Date of Birth
-                  </label>
-                  <input
-                    type="date"
-                    id="submitter_date_of_birth"
-                    name="submitter_date_of_birth"
-                    value={formData.submitter_date_of_birth}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   />
