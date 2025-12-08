@@ -1,111 +1,150 @@
 import Link from 'next/link'
+import Image from 'next/image'
+import { MobileMenu } from './MobileMenu'
 
 export default function Header() {
   return (
     <header className="relative z-50">
-      <div
-        className="flex items-center justify-between"
-        style={{
-          paddingLeft: "2.7vw",
-          paddingRight: "2.7vw",
-          paddingTop: "20px",
-          paddingBottom: "20px",
-          minHeight: "68px",
-          height: "auto",
-        }}
-      >
-        {/* Logo/Title */}
-        <Link href="/" className="flex items-center relative z-50">
-          <span
-            className="text-white hover:text-white/80 transition-colors"
-            style={{
-              fontFamily: "Montserrat",
-              fontStyle: "normal",
-              fontWeight: 800,
-              fontSize: "1.5rem",
-              letterSpacing: "-0.07em",
-              textTransform: "uppercase",
-            }}
-          >
-            MOYD JOBS
-          </span>
+      {/* Header Title Nav Wrapper */}
+      <div className="header-title-nav-wrapper flex items-center justify-between" style={{
+        paddingLeft: '2.7vw',
+        paddingRight: '2.7vw',
+        paddingTop: '20px',
+        paddingBottom: '20px',
+        minHeight: '68px',
+        height: 'auto'
+      }}>
+        {/* Logo */}
+        <Link href="https://moyoungdemocrats.org" className="flex items-center relative z-50">
+          <Image
+            src="/text-logo-960png.png"
+            alt="Missouri Young Democrats"
+            width={143}
+            height={68}
+            className="w-auto h-[30px] md:h-[68px]"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center" style={{ gap: "0.8vw" }}>
+        <nav className="hidden md:flex items-center" style={{ gap: '0.8vw' }}>
+          <Link
+            href="https://moyoungdemocrats.org/our-team"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: 'Montserrat',
+              fontStyle: 'normal',
+              fontWeight: 800,
+              fontSize: '1.1rem',
+              height: '1.8vw',
+              letterSpacing: '-0.07em'
+            }}
+          >
+            OUR TEAM
+          </Link>
+          <Link
+            href="https://moyoungdemocrats.org/chapters"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: 'Montserrat',
+              fontStyle: 'normal',
+              fontWeight: 800,
+              fontSize: '1.1rem',
+              height: '1.8vw',
+              letterSpacing: '-0.07em'
+            }}
+          >
+            CHAPTERS
+          </Link>
+          <Link
+            href="https://events.moyoungdemocrats.org"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: 'Montserrat',
+              fontStyle: 'normal',
+              fontWeight: 800,
+              fontSize: '1.1rem',
+              height: '1.8vw',
+              letterSpacing: '-0.07em'
+            }}
+          >
+            EVENTS
+          </Link>
           <Link
             href="/"
             className="text-white hover:text-white/80 transition-colors uppercase"
             style={{
-              fontFamily: "Montserrat",
-              fontStyle: "normal",
+              fontFamily: 'Montserrat',
+              fontStyle: 'normal',
               fontWeight: 800,
-              fontSize: "1.1rem",
-              letterSpacing: "-0.07em",
+              fontSize: '1.1rem',
+              height: '1.8vw',
+              letterSpacing: '-0.07em',
+              textDecoration: 'underline'
             }}
           >
             JOBS
           </Link>
           <Link
-            href="/submit"
+            href="https://moyoungdemocrats.org/about"
             className="text-white hover:text-white/80 transition-colors uppercase"
             style={{
-              fontFamily: "Montserrat",
-              fontStyle: "normal",
+              fontFamily: 'Montserrat',
+              fontStyle: 'normal',
               fontWeight: 800,
-              fontSize: "1.1rem",
-              letterSpacing: "-0.07em",
+              fontSize: '1.1rem',
+              height: '1.8vw',
+              letterSpacing: '-0.07em'
             }}
           >
-            POST A JOB
+            ABOUT
           </Link>
-          <a
-            href="https://events.moyoungdemocrats.org"
+          <Link
+            href="https://moyoungdemocrats.org/donate"
             className="text-white hover:text-white/80 transition-colors uppercase"
             style={{
-              fontFamily: "Montserrat",
-              fontStyle: "normal",
+              fontFamily: 'Montserrat',
+              fontStyle: 'normal',
               fontWeight: 800,
-              fontSize: "1.1rem",
-              letterSpacing: "-0.07em",
+              fontSize: '1.1rem',
+              height: '1.8vw',
+              letterSpacing: '-0.07em'
             }}
           >
-            EVENTS
-          </a>
-          <a
+            DONATE
+          </Link>
+          <Link
+            href="https://moyoungdemocrats.org/contact"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: 'Montserrat',
+              fontStyle: 'normal',
+              fontWeight: 800,
+              fontSize: '1.1rem',
+              height: '1.8vw',
+              letterSpacing: '-0.07em'
+            }}
+          >
+            CONTACT
+          </Link>
+          <Link
             href="https://members.moyoungdemocrats.org"
             className="text-white hover:text-white/80 transition-colors uppercase"
             style={{
-              fontFamily: "Montserrat",
-              fontStyle: "normal",
+              fontFamily: 'Montserrat',
+              fontStyle: 'normal',
               fontWeight: 800,
-              fontSize: "1.1rem",
-              letterSpacing: "-0.07em",
+              fontSize: '1.1rem',
+              height: '1.8vw',
+              letterSpacing: '-0.07em'
             }}
           >
             MEMBERS
-          </a>
-          <a
-            href="https://moyoungdemocrats.org"
-            className="text-white hover:text-white/80 transition-colors uppercase"
-            style={{
-              fontFamily: "Montserrat",
-              fontStyle: "normal",
-              fontWeight: 800,
-              fontSize: "1.1rem",
-              letterSpacing: "-0.07em",
-            }}
-          >
-            MAIN SITE
-          </a>
+          </Link>
         </nav>
 
-        {/* Mobile Menu Button */}
-        <button className="md:hidden text-white" aria-label="Menu">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        {/* Mobile Menu */}
+        <MobileMenu />
       </div>
     </header>
   )
