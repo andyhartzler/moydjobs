@@ -1,7 +1,6 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import JobCard from '@/components/JobCard'
 import BlurredJobPreview from '@/components/BlurredJobPreview'
-import MembershipPrompt from '@/components/MembershipPrompt'
 import Link from 'next/link'
 
 export default async function HomePage() {
@@ -75,42 +74,9 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="py-12">
-        <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="card-elevated p-6">
-              <div className="text-4xl font-bold mb-2" style={{ color: '#5B9FBD' }}>{jobs?.length || 0}</div>
-              <div className="text-gray-700 font-medium uppercase tracking-wide text-sm">Active Opportunities</div>
-            </div>
-            <div className="card-elevated p-6">
-              <div className="text-4xl font-bold mb-2" style={{ color: '#5B9FBD' }}>
-                {jobs?.filter(j => j.is_paid).length || 0}
-              </div>
-              <div className="text-gray-700 font-medium uppercase tracking-wide text-sm">Paid Positions</div>
-            </div>
-            <div className="card-elevated p-6">
-              <div className="text-4xl font-bold mb-2" style={{ color: '#5B9FBD' }}>
-                {jobs?.filter(j => j.job_type === 'volunteer').length || 0}
-              </div>
-              <div className="text-gray-700 font-medium uppercase tracking-wide text-sm">Volunteer Roles</div>
-            </div>
-            <div className="card-elevated p-6">
-              <div className="text-4xl font-bold mb-2" style={{ color: '#5B9FBD' }}>
-                {jobs?.filter(j => j.location_type === 'remote').length || 0}
-              </div>
-              <div className="text-gray-700 font-medium uppercase tracking-wide text-sm">Remote Options</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="section-padding">
         <div className="container-custom">
-          {/* Show membership prompt for non-members */}
-          {!isMember && <MembershipPrompt className="mb-8" />}
-
           {/* Job Listings */}
           {jobs && jobs.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
