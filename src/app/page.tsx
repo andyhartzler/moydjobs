@@ -33,7 +33,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="section-padding" style={{ background: 'linear-gradient(135deg, #5B9FBD 0%, #273351 100%)' }}>
+      <div className="section-padding">
         <div className="container-custom">
           <h1 className="text-white mb-4" style={{
             fontFamily: 'Montserrat',
