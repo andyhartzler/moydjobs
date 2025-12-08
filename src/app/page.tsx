@@ -31,21 +31,32 @@ export default async function HomePage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section - Match moyd-events style */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <div className="section-padding" style={{ background: 'linear-gradient(135deg, #5B9FBD 0%, #273351 100%)' }}>
+        <div className="container-custom">
+          <h1 className="text-white mb-4" style={{
+            fontFamily: 'Montserrat',
+            fontSize: 'clamp(2rem, 5vw, 3.4rem)',
+            fontWeight: 800,
+            letterSpacing: '-0.06em',
+            textTransform: 'uppercase',
+            lineHeight: '1.2'
+          }}>
             Job &amp; Volunteer Opportunities
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-blue-100">
+          <p className="text-white/90 mb-8" style={{
+            fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
+            fontWeight: 500,
+            maxWidth: '800px'
+          }}>
             Connect with opportunities to make a difference in Missouri
           </p>
 
           <div className="flex flex-wrap gap-4">
             <Link
               href="/submit"
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 transition-colors"
+              className="btn-primary"
             >
               Post an Opportunity
             </Link>
@@ -55,7 +66,7 @@ export default async function HomePage() {
                 href="https://docs.google.com/forms/d/e/1FAIpQLSd5Hd_cgdFmgE7f9gdIxmwXSAdxkuFuITENO_x5VkhDrtR8Ag/viewform?pli=1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 border-2 border-white text-base font-medium rounded-md text-white hover:bg-white hover:text-blue-700 transition-colors"
+                className="btn-secondary"
               >
                 Become a Member
               </a>
@@ -65,80 +76,63 @@ export default async function HomePage() {
       </div>
 
       {/* Stats Section */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div>
-              <div className="text-3xl font-bold text-blue-600">{jobs?.length || 0}</div>
-              <div className="text-gray-600">Active Opportunities</div>
+      <div className="py-12" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
+        <div className="container-custom">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div className="card-elevated p-6">
+              <div className="text-4xl font-bold mb-2" style={{ color: '#5B9FBD' }}>{jobs?.length || 0}</div>
+              <div className="text-gray-700 font-medium uppercase tracking-wide text-sm">Active Opportunities</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-600">
+            <div className="card-elevated p-6">
+              <div className="text-4xl font-bold mb-2" style={{ color: '#5B9FBD' }}>
                 {jobs?.filter(j => j.is_paid).length || 0}
               </div>
-              <div className="text-gray-600">Paid Positions</div>
+              <div className="text-gray-700 font-medium uppercase tracking-wide text-sm">Paid Positions</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-600">
+            <div className="card-elevated p-6">
+              <div className="text-4xl font-bold mb-2" style={{ color: '#5B9FBD' }}>
                 {jobs?.filter(j => j.job_type === 'volunteer').length || 0}
               </div>
-              <div className="text-gray-600">Volunteer Roles</div>
+              <div className="text-gray-700 font-medium uppercase tracking-wide text-sm">Volunteer Roles</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-600">
+            <div className="card-elevated p-6">
+              <div className="text-4xl font-bold mb-2" style={{ color: '#5B9FBD' }}>
                 {jobs?.filter(j => j.location_type === 'remote').length || 0}
               </div>
-              <div className="text-gray-600">Remote Options</div>
+              <div className="text-gray-700 font-medium uppercase tracking-wide text-sm">Remote Options</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Show membership prompt for non-members */}
-        {!isMember && <MembershipPrompt className="mb-8" />}
+      <div className="section-padding" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
+        <div className="container-custom">
+          {/* Show membership prompt for non-members */}
+          {!isMember && <MembershipPrompt className="mb-8" />}
 
-        {/* Job Listings */}
-        {jobs && jobs.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {jobs.map((job) => (
-              isMember ? (
-                <JobCard key={job.id} job={job} />
-              ) : (
-                <BlurredJobPreview key={job.id} job={job} />
-              )
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <h3 className="mt-2 text-lg font-medium text-gray-900">No opportunities available</h3>
-            <p className="mt-1 text-gray-500">Check back later for new postings</p>
-          </div>
-        )}
-      </div>
-
-      {/* Footer - Match moyd-events */}
-      <footer className="bg-gray-800 text-white mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <p className="text-gray-400">
-              © {new Date().getFullYear()} Missouri Young Democrats. All rights reserved.
-            </p>
-            <div className="mt-4 flex justify-center space-x-6">
-              <a href="https://moyoungdemocrats.org" className="text-gray-400 hover:text-white">
-                Main Website
-              </a>
-              <a href="https://members.moyoungdemocrats.org" className="text-gray-400 hover:text-white">
-                Member Portal
-              </a>
+          {/* Job Listings */}
+          {jobs && jobs.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {jobs.map((job) => (
+                isMember ? (
+                  <JobCard key={job.id} job={job} />
+                ) : (
+                  <BlurredJobPreview key={job.id} job={job} />
+                )
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="card-elevated p-12 text-center">
+              <svg className="mx-auto h-16 w-16 mb-4" style={{ color: '#5B9FBD' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <h3 className="text-xl font-bold text-gray-900 mb-2 uppercase" style={{ letterSpacing: '-0.04em' }}>No opportunities available</h3>
+              <p className="text-gray-600">Check back later for new postings</p>
+            </div>
+          )}
         </div>
-      </footer>
+      </div>
     </div>
   )
 }

@@ -1,28 +1,206 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary: #273351;
+  --primary-dark: #1a2338;
+  --primary-light: #677fa3;
+  --accent-blue: #1e40af;
+  --accent-red: #dc2626;
+  --accent-gold: #d97706;
+  --moyd-blue-light: #5B9FBD;
+  --moyd-blue-dark: #3D7A94;
+  --moyd-banner: #A9CCE1;
+  --moyd-navy: #273351;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* MOYD Brand Colors */
+  --color-primary-50: #f0f2f5;
+  --color-primary-100: #d9dfe8;
+  --color-primary-200: #b3bfd1;
+  --color-primary-300: #8d9fba;
+  --color-primary-400: #677fa3;
+  --color-primary-500: #273351;
+  --color-primary-600: #1f2841;
+  --color-primary-700: #1a2338;
+  --color-primary-800: #141c2d;
+  --color-primary-900: #0f1522;
+  --color-primary: #273351;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-moyd-blue-light: #5B9FBD;
+  --color-moyd-blue-dark: #3D7A94;
+  --color-moyd-banner: #A9CCE1;
+  --color-moyd-navy: #273351;
+
+  --color-accent-blue: #1e40af;
+  --color-accent-red: #dc2626;
+  --color-accent-gold: #d97706;
+
+  /* Custom Shadows */
+  --shadow-soft: 0 2px 15px 0 rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 25px 0 rgba(0, 0, 0, 0.12);
+  --shadow-large: 0 10px 40px 0 rgba(0, 0, 0, 0.15);
+  --shadow-header: 0px 12px 12px 0px rgba(0, 0, 0, 0.25);
+
+  /* Fonts */
+  --font-sans: 'Montserrat', system-ui, sans-serif;
+  --font-heading: 'Montserrat', system-ui, sans-serif;
+  --font-montserrat: 'Montserrat', sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-gray-50 text-gray-900;
+  font-family: 'Montserrat', system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.3em;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: 3.4rem;
+}
+
+h2 {
+  font-size: 2.8rem;
+}
+
+h3 {
+  font-size: 2.2rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+/* Button Styles */
+.btn-primary {
+  @apply bg-primary text-white px-6 py-3 rounded-lg font-semibold
+         transition-all duration-200
+         shadow-[var(--shadow-medium)];
+}
+
+.btn-primary:hover {
+  @apply bg-primary-700 shadow-[var(--shadow-large)] transform -translate-y-0.5;
+}
+
+.btn-secondary {
+  @apply bg-white text-primary border-2 border-primary px-6 py-3 rounded-lg
+         font-semibold transition-all duration-200;
+}
+
+.btn-secondary:hover {
+  @apply bg-primary-50;
+}
+
+/* Card Styles */
+.card-elevated {
+  @apply bg-white rounded-xl transition-shadow duration-300;
+  box-shadow: var(--shadow-soft);
+}
+
+.card-elevated:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.glass-card {
+  @apply bg-white/90 backdrop-blur-sm;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Layout Utilities */
+.gradient-primary {
+  @apply bg-gradient-to-br from-primary-600 to-primary-800;
+}
+
+.section-padding {
+  @apply py-16;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    @apply py-24;
+  }
+}
+
+.container-custom {
+  @apply container mx-auto px-4;
+}
+
+@media (min-width: 640px) {
+  .container-custom {
+    @apply px-6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-custom {
+    @apply px-8;
+  }
+}
+
+/* Scrolling Banner */
+.scrolling-banner::before,
+.scrolling-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scrolling-banner::before {
+  left: 0;
+  background: linear-gradient(to right, #5B9FBD, transparent);
+}
+
+.scrolling-banner::after {
+  right: 0;
+  background: linear-gradient(to left, #5B9FBD, transparent);
+}
+
+.marquee-container {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-content {
+  display: flex;
+  animation: marquee 30s linear infinite;
+}
+
+.scrolling-banner:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+.marquee-text {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  color: white;
+  padding: 0 0.5em;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-content {
+    animation: none;
+  }
 }
 
 /* Utility classes for line clamping */
@@ -40,11 +218,38 @@ body {
   overflow: hidden;
 }
 
-/* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-checkmark {
+  animation: checkmark 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(-10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 /* Focus styles */

@@ -15,39 +15,39 @@ export default function JobCard({ job }: JobCardProps) {
 
   return (
     <Link href={`/jobs/${job.slug}`}>
-      <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6 cursor-pointer h-full flex flex-col">
+      <div className="card-elevated p-6 cursor-pointer h-full flex flex-col">
         {job.featured && (
-          <span className="inline-block px-2 py-1 text-xs font-semibold text-white bg-yellow-500 rounded-full mb-2 self-start">
+          <span className="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wide text-white rounded-full mb-3 self-start" style={{ backgroundColor: '#d97706', letterSpacing: '0.05em' }}>
             ⭐ Featured
           </span>
         )}
 
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+        <h3 className="text-lg font-bold text-gray-900 mb-2 uppercase" style={{ fontFamily: 'Montserrat', letterSpacing: '-0.04em' }}>
           {job.title}
         </h3>
 
-        <p className="text-gray-600 text-sm mb-3">{job.organization}</p>
+        <p className="text-gray-600 text-sm mb-4 font-medium">{job.organization}</p>
 
-        <div className="flex flex-wrap gap-2 mb-3">
-          <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${typeColors[job.job_type] || typeColors['contract']}`}>
-            {job.job_type.replace('-', ' ').toUpperCase()}
+        <div className="flex flex-wrap gap-2 mb-4">
+          <span className={`inline-block px-3 py-1 text-xs font-bold rounded-full uppercase ${typeColors[job.job_type] || typeColors['contract']}`} style={{ letterSpacing: '0.05em' }}>
+            {job.job_type.replace('-', ' ')}
           </span>
 
           {job.location_type && (
-            <span className="inline-block px-2 py-1 text-xs font-semibold bg-gray-100 text-gray-800 rounded-full">
+            <span className="inline-block px-3 py-1 text-xs font-bold rounded-full uppercase" style={{ backgroundColor: '#e5e7eb', color: '#374151', letterSpacing: '0.05em' }}>
               {job.location_type}
             </span>
           )}
 
           {job.is_paid && (
-            <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">
+            <span className="inline-block px-3 py-1 text-xs font-bold rounded-full uppercase" style={{ backgroundColor: '#d1fae5', color: '#065f46', letterSpacing: '0.05em' }}>
               💰 Paid
             </span>
           )}
         </div>
 
         {job.location && (
-          <p className="text-sm text-gray-500 mb-3">
+          <p className="text-sm mb-4 font-medium" style={{ color: '#5B9FBD' }}>
             📍 {job.location}
           </p>
         )}
@@ -57,7 +57,7 @@ export default function JobCard({ job }: JobCardProps) {
         </p>
 
         {job.expires_at && (
-          <p className="text-xs text-gray-500 mt-4">
+          <p className="text-xs text-gray-500 mt-4 font-medium">
             Expires: {new Date(job.expires_at).toLocaleDateString()}
           </p>
         )}

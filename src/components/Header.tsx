@@ -2,36 +2,110 @@ import Link from 'next/link'
 
 export default function Header() {
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-blue-600 hover:text-blue-700">
-              MOYD Jobs
-            </Link>
-          </div>
+    <header className="relative z-50">
+      <div
+        className="flex items-center justify-between"
+        style={{
+          paddingLeft: "2.7vw",
+          paddingRight: "2.7vw",
+          paddingTop: "20px",
+          paddingBottom: "20px",
+          minHeight: "68px",
+          height: "auto",
+        }}
+      >
+        {/* Logo/Title */}
+        <Link href="/" className="flex items-center relative z-50">
+          <span
+            className="text-white hover:text-white/80 transition-colors"
+            style={{
+              fontFamily: "Montserrat",
+              fontStyle: "normal",
+              fontWeight: 800,
+              fontSize: "1.5rem",
+              letterSpacing: "-0.07em",
+              textTransform: "uppercase",
+            }}
+          >
+            MOYD JOBS
+          </span>
+        </Link>
 
-          <nav className="flex items-center space-x-4">
-            <Link
-              href="/submit"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium"
-            >
-              Post a Job
-            </Link>
-            <a
-              href="https://members.moyoungdemocrats.org/login"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium"
-            >
-              Member Login
-            </a>
-            <a
-              href="https://moyoungdemocrats.org"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium"
-            >
-              Main Site
-            </a>
-          </nav>
-        </div>
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center" style={{ gap: "0.8vw" }}>
+          <Link
+            href="/"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: "Montserrat",
+              fontStyle: "normal",
+              fontWeight: 800,
+              fontSize: "1.1rem",
+              letterSpacing: "-0.07em",
+            }}
+          >
+            JOBS
+          </Link>
+          <Link
+            href="/submit"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: "Montserrat",
+              fontStyle: "normal",
+              fontWeight: 800,
+              fontSize: "1.1rem",
+              letterSpacing: "-0.07em",
+            }}
+          >
+            POST A JOB
+          </Link>
+          <a
+            href="https://events.moyoungdemocrats.org"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: "Montserrat",
+              fontStyle: "normal",
+              fontWeight: 800,
+              fontSize: "1.1rem",
+              letterSpacing: "-0.07em",
+            }}
+          >
+            EVENTS
+          </a>
+          <a
+            href="https://members.moyoungdemocrats.org"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: "Montserrat",
+              fontStyle: "normal",
+              fontWeight: 800,
+              fontSize: "1.1rem",
+              letterSpacing: "-0.07em",
+            }}
+          >
+            MEMBERS
+          </a>
+          <a
+            href="https://moyoungdemocrats.org"
+            className="text-white hover:text-white/80 transition-colors uppercase"
+            style={{
+              fontFamily: "Montserrat",
+              fontStyle: "normal",
+              fontWeight: 800,
+              fontSize: "1.1rem",
+              letterSpacing: "-0.07em",
+            }}
+          >
+            MAIN SITE
+          </a>
+        </nav>
+
+        {/* Mobile Menu Button */}
+        <button className="md:hidden text-white" aria-label="Menu">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
       </div>
     </header>
   )
