@@ -356,7 +356,7 @@ export default function SubmitJobPage() {
 
           {/* Requirements */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Requirements &amp; Qualifications</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Criteria</h2>
 
             <div className="space-y-4">
               <div>
