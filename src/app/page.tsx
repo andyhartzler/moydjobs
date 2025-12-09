@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import JobCard from '@/components/JobCard'
-import BlurredJobPreview from '@/components/BlurredJobPreview'
+import MembersOnlyBanner from '@/components/MembersOnlyBanner'
 import Link from 'next/link'
 
 export default async function HomePage() {
@@ -78,24 +78,24 @@ export default async function HomePage() {
       <div className="section-padding">
         <div className="container-custom">
           {/* Job Listings */}
-          {jobs && jobs.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {jobs.map((job) => (
-                isMember ? (
+          {isMember ? (
+            jobs && jobs.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {jobs.map((job) => (
                   <JobCard key={job.id} job={job} />
-                ) : (
-                  <BlurredJobPreview key={job.id} job={job} />
-                )
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="card-elevated p-12 text-center">
+                <svg className="mx-auto h-16 w-16 mb-4" style={{ color: '#5B9FBD' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 uppercase" style={{ letterSpacing: '-0.04em' }}>No opportunities available</h3>
+                <p className="text-gray-600">Check back later for new postings</p>
+              </div>
+            )
           ) : (
-            <div className="card-elevated p-12 text-center">
-              <svg className="mx-auto h-16 w-16 mb-4" style={{ color: '#5B9FBD' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <h3 className="text-xl font-bold text-gray-900 mb-2 uppercase" style={{ letterSpacing: '-0.04em' }}>No opportunities available</h3>
-              <p className="text-gray-600">Check back later for new postings</p>
-            </div>
+            <MembersOnlyBanner />
           )}
         </div>
       </div>
