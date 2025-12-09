@@ -15,20 +15,14 @@ export default function SubmitSuccessPage() {
         </h2>
 
         <p className="text-gray-600 mb-6">
-          Thank you for posting an opportunity with Missouri Young Democrats. You&apos;ve been added to our mailing list and will receive updates on your submission status.
+          Thank you for posting an opportunity with Missouri Young Democrats. You&apos;ll be notified via email once your submission is live or we will contact you if more information is needed. In the meantime feel free to reach out to us with any questions at info@moyoungdemocrats.org
         </p>
 
         <div className="space-y-3">
           <Link
-            href="/"
-            className="block w-full bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 font-medium"
-          >
-            View All Jobs
-          </Link>
-
-          <Link
             href="/submit"
-            className="block w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-md hover:bg-gray-200 font-medium"
+            className="block w-full px-4 py-3 rounded-md font-medium text-white"
+            style={{ backgroundColor: '#273351' }}
           >
             Post Another Opportunity
           </Link>
