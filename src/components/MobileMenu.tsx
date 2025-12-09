@@ -45,20 +45,20 @@ export function MobileMenu() {
         >
           <nav className="flex flex-col items-center" style={{ gap: '3vw' }}>
             <Link
-              href="/"
-              className="text-white hover:text-white/80 transition-colors uppercase"
-              style={{ ...navLinkStyle, textDecoration: 'underline' }}
-              onClick={() => setIsOpen(false)}
-            >
-              JOBS
-            </Link>
-            <Link
-              href="/submit"
+              href="https://moyoungdemocrats.org/our-team"
               className="text-white hover:text-white/80 transition-colors uppercase"
               style={navLinkStyle}
               onClick={() => setIsOpen(false)}
             >
-              POST A JOB
+              OUR TEAM
+            </Link>
+            <Link
+              href="https://moyoungdemocrats.org/chapters"
+              className="text-white hover:text-white/80 transition-colors uppercase"
+              style={navLinkStyle}
+              onClick={() => setIsOpen(false)}
+            >
+              CHAPTERS
             </Link>
             <Link
               href="https://events.moyoungdemocrats.org"
@@ -83,6 +83,14 @@ export function MobileMenu() {
               onClick={() => setIsOpen(false)}
             >
               DONATE
+            </Link>
+            <Link
+              href="https://moyoungdemocrats.org/contact"
+              className="text-white hover:text-white/80 transition-colors uppercase"
+              style={navLinkStyle}
+              onClick={() => setIsOpen(false)}
+            >
+              CONTACT
             </Link>
             <Link
               href="https://members.moyoungdemocrats.org"

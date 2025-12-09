@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
 import Image from "next/image";
 import "./globals.css";
 import Header from "@/components/Header";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   title: "Jobs & Opportunities - Missouri Young Democrats",
@@ -40,7 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ backgroundColor: "#273351" }}>
+      <body className={montserrat.className} style={{ backgroundColor: "#273351" }}>
         {/* Background */}
         <div
           className="fixed inset-0 z-0"

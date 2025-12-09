@@ -35,7 +35,7 @@ export default async function HomePage() {
       <div className="section-padding">
         <div className="container-custom">
           <h1 className="text-white mb-4" style={{
-            fontFamily: 'Montserrat',
+            fontFamily: 'Montserrat, sans-serif',
             fontSize: 'clamp(2rem, 5vw, 3.4rem)',
             fontWeight: 800,
             letterSpacing: '-0.06em',
@@ -45,6 +45,7 @@ export default async function HomePage() {
             Job &amp; Volunteer Opportunities
           </h1>
           <p className="text-white/90 mb-8" style={{
+            fontFamily: 'Montserrat, sans-serif',
             fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
             fontWeight: 500,
             maxWidth: '800px'
