@@ -173,7 +173,14 @@ export default function SubmitJobPage() {
           >
             ← Back to Jobs
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+          <h1 className="font-bold text-white" style={{
+            fontFamily: 'Montserrat, sans-serif',
+            fontSize: 'clamp(1.25rem, 5vw, 1.875rem)',
+            fontWeight: 800,
+            letterSpacing: '-0.04em',
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap'
+          }}>
             Post an Opportunity
           </h1>
           <p className="mt-2 text-white/80">
@@ -191,7 +198,14 @@ export default function SubmitJobPage() {
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-8 space-y-6">
           {/* Position Details */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Position Details</h2>
+            <h2 className="text-gray-900 mb-4" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap'
+            }}>Position Details</h2>
 
             <div className="space-y-4">
               <div>
@@ -301,7 +315,14 @@ export default function SubmitJobPage() {
 
           {/* Compensation */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Compensation</h2>
+            <h2 className="text-gray-900 mb-4" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap'
+            }}>Compensation</h2>
 
             <div className="space-y-4">
               <div className="flex items-center">
@@ -356,7 +377,14 @@ export default function SubmitJobPage() {
 
           {/* Requirements */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Criteria</h2>
+            <h2 className="text-gray-900 mb-4" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap'
+            }}>Criteria</h2>
 
             <div className="space-y-4">
               <div>
@@ -393,7 +421,14 @@ export default function SubmitJobPage() {
 
           {/* Contact Information */}
           <div className="border-b border-gray-200 pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Application &amp; Contact</h2>
+            <h2 className="text-gray-900 mb-4" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap'
+            }}>Application &amp; Contact</h2>
 
             <div className="space-y-4">
               <div>
@@ -493,7 +528,14 @@ export default function SubmitJobPage() {
 
           {/* Your Information */}
           <div className="pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Information</h2>
+            <h2 className="text-gray-900 mb-4" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap'
+            }}>Your Information</h2>
 
             <div className="space-y-4">
               {/* Phone Number - Always visible */}
