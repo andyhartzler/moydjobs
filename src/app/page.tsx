@@ -58,8 +58,8 @@ export default async function HomePage() {
               href="/submit"
               className="btn-primary"
               style={{
-                fontSize: '1.44rem',
-                padding: '1.28rem 2.56rem'
+                fontSize: '1.32rem',
+                padding: '1.18rem 2.36rem'
               }}
             >
               Post an Opportunity
