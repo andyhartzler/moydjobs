@@ -90,8 +90,14 @@ export default function MembersOnlyBanner() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <a
               href="https://members.moyoungdemocrats.org/dashboard/opportunities"
-              className="inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-white transition-all duration-200 hover:opacity-90 shadow-lg text-sm sm:text-base"
-              style={{ backgroundColor: '#273351', fontFamily: "'Montserrat', sans-serif" }}
+              className="inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-white transition-all duration-200 hover:opacity-90 shadow-lg"
+              style={{
+                backgroundColor: '#273351',
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 600,
+                fontSize: '14px',
+                letterSpacing: '-0.02em'
+              }}
             >
               Sign in to view jobs
             </a>
@@ -99,8 +105,14 @@ export default function MembersOnlyBanner() {
               href="https://docs.google.com/forms/d/e/1FAIpQLSd5Hd_cgdFmgE7f9gdIxmwXSAdxkuFuITENO_x5VkhDrtR8Ag/viewform?usp=header"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-white transition-all duration-200 hover:opacity-90 shadow-lg text-sm sm:text-base"
-              style={{ backgroundColor: '#273351', fontFamily: "'Montserrat', sans-serif" }}
+              className="inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-white transition-all duration-200 hover:opacity-90 shadow-lg"
+              style={{
+                backgroundColor: '#273351',
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 600,
+                fontSize: '14px',
+                letterSpacing: '-0.02em'
+              }}
             >
               Become a member
             </a>
