@@ -87,34 +87,33 @@ export default function MembersOnlyBanner() {
       {/* Overlay with buttons */}
       <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-10">
         <div className="text-center px-4">
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center">
             <a
               href="https://members.moyoungdemocrats.org/dashboard/opportunities"
-              className="inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-white transition-all duration-200 hover:opacity-90 shadow-lg"
+              className="inline-block px-6 py-3 rounded-lg bg-white border-2 transition-all duration-200 hover:bg-gray-50"
               style={{
-                backgroundColor: '#273351',
+                borderColor: '#273351',
+                color: '#273351',
                 fontFamily: 'Montserrat, sans-serif',
-                fontWeight: 600,
-                fontSize: '14px',
-                letterSpacing: '-0.02em'
+                fontWeight: 600
               }}
             >
-              Sign in to view jobs
+              Sign In to View Jobs
             </a>
+            <span className="text-gray-500 font-medium text-sm">or</span>
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLSd5Hd_cgdFmgE7f9gdIxmwXSAdxkuFuITENO_x5VkhDrtR8Ag/viewform?usp=header"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-white transition-all duration-200 hover:opacity-90 shadow-lg"
+              className="inline-block px-6 py-3 rounded-lg bg-white border-2 transition-all duration-200 hover:bg-gray-50"
               style={{
-                backgroundColor: '#273351',
+                borderColor: '#273351',
+                color: '#273351',
                 fontFamily: 'Montserrat, sans-serif',
-                fontWeight: 600,
-                fontSize: '14px',
-                letterSpacing: '-0.02em'
+                fontWeight: 600
               }}
             >
-              Become a member
+              Become a Member
             </a>
           </div>
         </div>

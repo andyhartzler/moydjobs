@@ -53,30 +53,19 @@ export default async function HomePage() {
             Connect with opportunities to make a difference in Missouri
           </p>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 mb-8">
             <Link
               href="/submit"
-              className="btn-primary"
+              className="btn-primary text-lg px-8 py-4"
             >
               Post an Opportunity
             </Link>
-
-            {!isMember && (
-              <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSd5Hd_cgdFmgE7f9gdIxmwXSAdxkuFuITENO_x5VkhDrtR8Ag/viewform?pli=1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary"
-              >
-                Become a Member
-              </a>
-            )}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="section-padding">
+      <div className="pt-0 pb-16 md:pb-24">
         <div className="container-custom">
           {/* Job Listings */}
           {isMember ? (
