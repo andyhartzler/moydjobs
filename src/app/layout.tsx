@@ -4,22 +4,22 @@ import "./globals.css";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Jobs - Missouri Young Democrats",
-  description: "Job and volunteer opportunities for Missouri Young Democrats members",
+  title: "Jobs & Opportunities - Missouri Young Democrats",
+  description: "Find job and volunteer opportunities with Missouri Young Democrats. Build your career in progressive politics and make a difference in Missouri.",
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
   openGraph: {
-    title: "Jobs - Missouri Young Democrats",
-    description: "Job and volunteer opportunities for Missouri Young Democrats members",
+    title: "Jobs & Opportunities - Missouri Young Democrats",
+    description: "Find job and volunteer opportunities with Missouri Young Democrats. Build your career in progressive politics and make a difference in Missouri.",
     images: [
       {
         url: "/social-share-image.png",
         width: 1200,
         height: 630,
-        alt: "Missouri Young Democrats Jobs",
+        alt: "Missouri Young Democrats - Jobs & Opportunities",
       },
     ],
     type: "website",
@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jobs - Missouri Young Democrats",
-    description: "Job and volunteer opportunities for Missouri Young Democrats members",
+    title: "Jobs & Opportunities - Missouri Young Democrats",
+    description: "Find job and volunteer opportunities with Missouri Young Democrats. Build your career in progressive politics and make a difference in Missouri.",
     images: ["/social-share-image.png"],
   },
 };
