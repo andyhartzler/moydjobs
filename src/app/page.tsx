@@ -56,7 +56,11 @@ export default async function HomePage() {
           <div className="flex flex-wrap gap-4 mb-8">
             <Link
               href="/submit"
-              className="btn-primary text-lg px-8 py-4"
+              className="btn-primary"
+              style={{
+                fontSize: '1.44rem',
+                padding: '1.28rem 2.56rem'
+              }}
             >
               Post an Opportunity
             </Link>
