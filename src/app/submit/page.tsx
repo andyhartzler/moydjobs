@@ -23,6 +23,7 @@ export default function SubmitJobPage() {
     location: '',
     location_type: 'in-person',
     is_paid: false,
+    is_volunteer: false,
     salary_range: '',
     hourly_rate: '',
     requirements: '',
@@ -107,6 +108,7 @@ export default function SubmitJobPage() {
             location: formData.location,
             location_type: formData.location_type,
             is_paid: formData.is_paid,
+            is_volunteer: formData.is_volunteer,
             salary_range: formData.salary_range,
             hourly_rate: formData.hourly_rate,
             requirements: formData.requirements,
@@ -213,7 +215,7 @@ export default function SubmitJobPage() {
             <div className="space-y-4">
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                  Job Title <span className="text-red-500">*</span>
+                  Position Title <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -245,7 +247,7 @@ export default function SubmitJobPage() {
 
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                  Job Description <span className="text-red-500">*</span>
+                  Position Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   id="description"
@@ -325,21 +327,36 @@ export default function SubmitJobPage() {
               letterSpacing: '-0.02em',
               textTransform: 'uppercase',
               whiteSpace: 'nowrap'
-            }}>Compensation</h2>
+            }}>Position Type</h2>
 
             <div className="space-y-4">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="is_paid"
-                  name="is_paid"
-                  checked={formData.is_paid}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="is_paid" className="ml-2 block text-sm text-gray-700">
-                  This is a paid position
-                </label>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="is_paid"
+                    name="is_paid"
+                    checked={formData.is_paid}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="is_paid" className="ml-2 block text-sm text-gray-700">
+                    This is a paid position
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="is_volunteer"
+                    name="is_volunteer"
+                    checked={formData.is_volunteer}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="is_volunteer" className="ml-2 block text-sm text-gray-700">
+                    This is a volunteer position
+                  </label>
+                </div>
               </div>
 
               {formData.is_paid && (
@@ -446,7 +463,7 @@ export default function SubmitJobPage() {
                   value={formData.contact_email}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Where applicants should send their applications"
+                  placeholder="This email will be notified when members apply"
                 />
               </div>
 
