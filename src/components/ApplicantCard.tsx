@@ -53,7 +53,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 
   // Check if cover_letter is a file upload reference
   const coverLetterIsFile = applicant.cover_letter?.startsWith('[Uploaded:')
-  const coverLetterUrl = coverLetterIsFile
+  const coverLetterUrl = coverLetterIsFile && applicant.cover_letter
     ? `https://faajpcarasilbfndzkmd.supabase.co/storage/v1/object/public/job-applications/${applicant.cover_letter.match(/\[Uploaded: (.+)\]/)?.[1]}`
     : null
 
