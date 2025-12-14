@@ -17,8 +17,6 @@ export default function SubmitSuccessPage() {
         <p className="text-gray-600 mb-6">
           Thank you for posting an opportunity with Missouri Young Democrats.
           <br /><br />
-          You&apos;ll be notified via email once your submission is live or we will contact you if more information is needed.
-          <br /><br />
           In the meantime feel free to reach out to us with any questions at info@moyoungdemocrats.org
         </p>
 
