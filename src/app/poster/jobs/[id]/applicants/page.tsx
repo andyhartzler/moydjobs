@@ -69,7 +69,11 @@ export default async function ApplicantsPage({ params }: ApplicantsPageProps) {
         {applicants && applicants.length > 0 ? (
           <div className="space-y-4">
             {applicants.map(applicant => (
-              <ApplicantCard key={applicant.id} applicant={applicant} />
+              <ApplicantCard
+                key={applicant.id}
+                applicant={applicant}
+                customQuestions={job.custom_questions || []}
+              />
             ))}
           </div>
         ) : (

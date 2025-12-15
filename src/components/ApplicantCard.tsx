@@ -4,6 +4,15 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import DocumentViewerModal from './DocumentViewerModal'
 
+interface CustomQuestion {
+  id: string
+  question: string
+  type: 'text' | 'textarea' | 'select' | 'checkbox' | 'radio'
+  required: boolean
+  options: string[]
+  order: number
+}
+
 interface ApplicantCardProps {
   applicant: {
     id: string
@@ -17,6 +26,7 @@ interface ApplicantCardProps {
     status: string
     created_at: string
     member_id?: string
+    custom_question_responses?: Record<string, string | string[] | boolean>
     member?: {
       first_name: string
       last_name: string
@@ -24,9 +34,10 @@ interface ApplicantCardProps {
       phone?: string
     }
   }
+  customQuestions?: CustomQuestion[]
 }
 
-export default function ApplicantCard({ applicant }: ApplicantCardProps) {
+export default function ApplicantCard({ applicant, customQuestions }: ApplicantCardProps) {
   const [status, setStatus] = useState(applicant.status)
   const [updating, setUpdating] = useState(false)
   const [viewerOpen, setViewerOpen] = useState(false)
@@ -109,6 +120,37 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
         <div className="mb-4">
           <h4 className="text-sm font-medium text-gray-700 mb-1">Cover Letter</h4>
           <p className="text-gray-600 text-sm whitespace-pre-line">{applicant.cover_letter}</p>
+        </div>
+      )}
+
+      {/* Custom Question Responses */}
+      {customQuestions && customQuestions.length > 0 && applicant.custom_question_responses && (
+        <div className="mb-4 border-t border-gray-100 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Application Responses</h4>
+          <div className="space-y-3">
+            {customQuestions
+              .sort((a, b) => a.order - b.order)
+              .map(question => {
+                const response = applicant.custom_question_responses?.[question.id]
+                if (response === undefined || response === null || response === '') return null
+
+                let displayValue: string
+                if (Array.isArray(response)) {
+                  displayValue = response.join(', ')
+                } else if (typeof response === 'boolean') {
+                  displayValue = response ? 'Yes' : 'No'
+                } else {
+                  displayValue = String(response)
+                }
+
+                return (
+                  <div key={question.id} className="bg-gray-50 rounded-md p-3">
+                    <p className="text-xs font-medium text-gray-500 mb-1">{question.question}</p>
+                    <p className="text-sm text-gray-900 whitespace-pre-line">{displayValue}</p>
+                  </div>
+                )
+              })}
+          </div>
         </div>
       )}
 
