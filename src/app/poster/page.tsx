@@ -39,7 +39,7 @@ export default function PosterSignInPage() {
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email: email.toLowerCase(),
       options: {
-        emailRedirectTo: `${window.location.origin}/poster/dashboard`,
+        emailRedirectTo: 'https://jobs.moyoungdemocrats.org/poster/dashboard',
         shouldCreateUser: true,
       }
     })
