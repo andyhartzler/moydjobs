@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import DocumentViewerModal from './DocumentViewerModal'
 
 interface ApplicantCardProps {
   applicant: {
@@ -28,7 +29,16 @@ interface ApplicantCardProps {
 export default function ApplicantCard({ applicant }: ApplicantCardProps) {
   const [status, setStatus] = useState(applicant.status)
   const [updating, setUpdating] = useState(false)
+  const [viewerOpen, setViewerOpen] = useState(false)
+  const [viewerUrl, setViewerUrl] = useState('')
+  const [viewerTitle, setViewerTitle] = useState('')
   const supabase = createClient()
+
+  const openDocument = (url: string, title: string) => {
+    setViewerUrl(url)
+    setViewerTitle(title)
+    setViewerOpen(true)
+  }
 
   const statusColors: Record<string, string> = {
     'submitted': 'bg-blue-100 text-blue-800',
@@ -103,32 +113,28 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
       )}
 
       {/* Documents */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap">
         {applicant.resume_url && (
-          <a
-            href={applicant.resume_url}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => openDocument(applicant.resume_url!, `Resume - ${applicant.applicant_name}`)}
             className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
           >
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Resume
-          </a>
+          </button>
         )}
         {coverLetterUrl && (
-          <a
-            href={coverLetterUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => openDocument(coverLetterUrl, `Cover Letter - ${applicant.applicant_name}`)}
             className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
           >
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Cover Letter
-          </a>
+          </button>
         )}
         <a
           href={`mailto:${applicant.applicant_email}`}
@@ -140,6 +146,14 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
           Email
         </a>
       </div>
+
+      {/* Document Viewer Modal */}
+      <DocumentViewerModal
+        isOpen={viewerOpen}
+        onClose={() => setViewerOpen(false)}
+        url={viewerUrl}
+        title={viewerTitle}
+      />
 
       {/* Status Update */}
       <div className="mt-4 pt-4 border-t border-gray-200">
