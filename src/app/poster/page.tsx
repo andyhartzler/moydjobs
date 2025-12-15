@@ -44,7 +44,7 @@ export default function PosterSignInPage() {
       email: email.toLowerCase(),
       options: {
         emailRedirectTo: 'https://jobs.moyoungdemocrats.org/poster/dashboard',
-        shouldCreateUser: true,
+        shouldCreateUser: false,
       }
     })
 
