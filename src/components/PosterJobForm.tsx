@@ -55,7 +55,6 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -76,7 +75,6 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
     e.preventDefault()
     setSaving(true)
     setError(null)
-    setSuccess(false)
 
     const { error: updateError } = await supabase
       .from('jobs')
@@ -90,11 +88,10 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
 
     if (updateError) {
       setError(updateError.message)
+      setSaving(false)
     } else {
-      setSuccess(true)
-      setTimeout(() => setSuccess(false), 3000)
+      router.push('/poster/dashboard')
     }
-    setSaving(false)
   }
 
   async function handleDelete() {
@@ -119,12 +116,6 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-red-800">{error}</p>
-          </div>
-        )}
-
-        {success && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-green-800">Changes saved successfully!</p>
           </div>
         )}
 
