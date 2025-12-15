@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import CustomQuestionsBuilder, { CustomQuestion } from '@/components/CustomQuestionsBuilder'
 
 export default function SubmitJobPage() {
   const [lookupData, setLookupData] = useState<any>(null)
@@ -13,6 +14,7 @@ export default function SubmitJobPage() {
   const [error, setError] = useState<string | null>(null)
   const [isSignedInPoster, setIsSignedInPoster] = useState(false)
   const [checkingSession, setCheckingSession] = useState(true)
+  const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>([])
   const router = useRouter()
   const supabase = createClient()
 
@@ -157,6 +159,7 @@ export default function SubmitJobPage() {
             application_instructions: formData.application_instructions,
             expires_at: formData.expires_at || null,
             submitter_organization: formData.submitter_organization,
+            custom_questions: customQuestions.length > 0 ? customQuestions : null,
           },
           submitter: {
             name: formData.submitter_name,
@@ -604,6 +607,25 @@ export default function SubmitJobPage() {
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Custom Questions */}
+          <div className="border-b border-gray-200 pb-6">
+            <h2 className="text-gray-900 mb-2" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap'
+            }}>Custom Application Questions</h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Optional. Add additional questions for applicants to answer when they apply.
+            </p>
+            <CustomQuestionsBuilder
+              questions={customQuestions}
+              onChange={setCustomQuestions}
+            />
           </div>
 
           {/* Your Information - Show simplified version for signed-in posters */}

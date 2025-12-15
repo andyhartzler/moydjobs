@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import CustomQuestionsBuilder, { CustomQuestion } from './CustomQuestionsBuilder'
 
 interface PosterJobFormProps {
   job: {
@@ -24,6 +25,7 @@ interface PosterJobFormProps {
     application_url?: string
     application_instructions?: string
     expires_at?: string
+    custom_questions?: CustomQuestion[]
   }
 }
 
@@ -47,6 +49,7 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
     application_instructions: job.application_instructions || '',
     expires_at: job.expires_at ? job.expires_at.split('T')[0] : '',
   })
+  const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>(job.custom_questions || [])
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -73,6 +76,7 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
       .update({
         ...formData,
         expires_at: formData.expires_at || null,
+        custom_questions: customQuestions.length > 0 ? customQuestions : null,
         updated_at: new Date().toISOString(),
       })
       .eq('id', job.id)
@@ -385,6 +389,20 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
               value={formData.expires_at}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+        </div>
+
+        {/* Custom Questions */}
+        <div className="space-y-4 pt-6 border-t border-gray-200">
+          <div>
+            <h3 className="text-sm font-medium text-gray-900 mb-1">Custom Application Questions</h3>
+            <p className="text-xs text-gray-500 mb-4">
+              Add additional questions for applicants to answer when they apply.
+            </p>
+            <CustomQuestionsBuilder
+              questions={customQuestions}
+              onChange={setCustomQuestions}
             />
           </div>
         </div>
