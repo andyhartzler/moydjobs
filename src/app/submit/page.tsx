@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -11,6 +11,8 @@ export default function SubmitJobPage() {
   const [phoneLookupDone, setPhoneLookupDone] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isSignedInPoster, setIsSignedInPoster] = useState(false)
+  const [checkingSession, setCheckingSession] = useState(true)
   const router = useRouter()
   const supabase = createClient()
 
@@ -47,6 +49,41 @@ export default function SubmitJobPage() {
     submitter_date_of_birth: '',
     submitter_employer: '',
   })
+
+  // Check if user is signed in as a poster and pre-fill their info
+  useEffect(() => {
+    async function checkPosterSession() {
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (session?.user?.email) {
+        // Check if they have jobs (they're a poster)
+        const { data: jobs } = await supabase
+          .from('jobs')
+          .select('submitter_name, submitter_email, submitter_phone, contact_email, contact_name, contact_phone, organization')
+          .eq('submitter_email', session.user.email.toLowerCase())
+          .order('created_at', { ascending: false })
+          .limit(1)
+
+        if (jobs && jobs.length > 0) {
+          const posterInfo = jobs[0]
+          setIsSignedInPoster(true)
+          setPhoneLookupDone(true) // Skip phone lookup
+          setFormData(prev => ({
+            ...prev,
+            submitter_name: posterInfo.submitter_name || prev.submitter_name,
+            submitter_email: posterInfo.submitter_email || session.user.email || prev.submitter_email,
+            submitter_phone: posterInfo.submitter_phone || prev.submitter_phone,
+            contact_email: posterInfo.contact_email || posterInfo.submitter_email || prev.contact_email,
+            contact_name: posterInfo.contact_name || posterInfo.submitter_name || prev.contact_name,
+            contact_phone: posterInfo.contact_phone || posterInfo.submitter_phone || prev.contact_phone,
+            organization: posterInfo.organization || prev.organization,
+          }))
+        }
+      }
+      setCheckingSession(false)
+    }
+    checkPosterSession()
+  }, [supabase])
 
   // Handle phone lookup when user enters phone number
   async function handlePhoneLookup(phone: string) {
@@ -158,10 +195,19 @@ export default function SubmitJobPage() {
       [name]: newValue
     }))
 
-    // Trigger phone lookup when phone number is entered
-    if (name === 'submitter_phone' && typeof newValue === 'string' && newValue.length >= 10) {
+    // Trigger phone lookup when phone number is entered (only if not a signed-in poster)
+    if (!isSignedInPoster && name === 'submitter_phone' && typeof newValue === 'string' && newValue.length >= 10) {
       handlePhoneLookup(newValue)
     }
+  }
+
+  // Show loading while checking session
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
+      </div>
+    )
   }
 
   return (
@@ -192,6 +238,20 @@ export default function SubmitJobPage() {
             Share opportunities with Missouri Young Democrats members
           </p>
         </div>
+
+        {/* Signed-in poster banner */}
+        {isSignedInPoster && (
+          <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="flex items-center">
+              <svg className="w-5 h-5 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-green-800 text-sm">
+                <strong>Welcome back!</strong> Your contact information has been pre-filled from your previous submission.
+              </p>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
@@ -546,201 +606,228 @@ export default function SubmitJobPage() {
             </div>
           </div>
 
-          {/* Your Information */}
-          <div className="pb-6">
-            <h2 className="text-gray-900 mb-4" style={{
-              fontFamily: 'Montserrat, sans-serif',
-              fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              textTransform: 'uppercase',
-              whiteSpace: 'nowrap'
-            }}>Your Information</h2>
+          {/* Your Information - Show simplified version for signed-in posters */}
+          {isSignedInPoster ? (
+            <div className="pb-6">
+              <h2 className="text-gray-900 mb-4" style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+                fontWeight: 700,
+                letterSpacing: '-0.02em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap'
+              }}>Your Information</h2>
 
-            <div className="space-y-4">
-              {/* Phone Number - Always visible */}
-              <div>
-                <label htmlFor="submitter_phone" className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="tel"
-                    id="submitter_phone"
-                    name="submitter_phone"
-                    required
-                    value={formData.submitter_phone}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="(555) 123-4567"
-                  />
-                  {lookingUp && (
-                    <div className="absolute right-3 top-2">
-                      <div className="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                    </div>
-                  )}
-                </div>
-                {lookupData?.found && (
-                  <p className="mt-1 text-sm text-green-600">
-                    Found your information!
+              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                <p className="text-sm text-gray-600">
+                  <strong>Name:</strong> {formData.submitter_name}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <strong>Email:</strong> {formData.submitter_email}
+                </p>
+                {formData.submitter_phone && (
+                  <p className="text-sm text-gray-600">
+                    <strong>Phone:</strong> {formData.submitter_phone}
                   </p>
                 )}
               </div>
-
-              {/* Rest of fields - Only visible after phone lookup */}
-              {phoneLookupDone && (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="submitter_name" className="block text-sm font-medium text-gray-700 mb-1">
-                        Your Name <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="submitter_name"
-                        name="submitter_name"
-                        required
-                        value={formData.submitter_name}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="submitter_email" className="block text-sm font-medium text-gray-700 mb-1">
-                        Your Email <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="submitter_email"
-                        name="submitter_email"
-                        required
-                        value={formData.submitter_email}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="submitter_date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
-                        Date of Birth <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="submitter_date_of_birth"
-                        name="submitter_date_of_birth"
-                        required
-                        value={formData.submitter_date_of_birth}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="submitter_zip_code" className="block text-sm font-medium text-gray-700 mb-1">
-                        ZIP Code <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="submitter_zip_code"
-                        name="submitter_zip_code"
-                        required
-                        value={formData.submitter_zip_code}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                        maxLength={5}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="submitter_address" className="block text-sm font-medium text-gray-700 mb-1">
-                      Street Address
-                    </label>
-                    <input
-                      type="text"
-                      id="submitter_address"
-                      name="submitter_address"
-                      value={formData.submitter_address}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="submitter_city" className="block text-sm font-medium text-gray-700 mb-1">
-                        City
-                      </label>
-                      <input
-                        type="text"
-                        id="submitter_city"
-                        name="submitter_city"
-                        value={formData.submitter_city}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="submitter_state" className="block text-sm font-medium text-gray-700 mb-1">
-                        State
-                      </label>
-                      <select
-                        id="submitter_state"
-                        name="submitter_state"
-                        value={formData.submitter_state}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        <option value="">Select...</option>
-                        <option value="MO">Missouri</option>
-                        <option value="KS">Kansas</option>
-                        <option value="IL">Illinois</option>
-                        <option value="IA">Iowa</option>
-                        <option value="AR">Arkansas</option>
-                        <option value="OK">Oklahoma</option>
-                        <option value="NE">Nebraska</option>
-                        <option value="TN">Tennessee</option>
-                        <option value="KY">Kentucky</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="submitter_employer" className="block text-sm font-medium text-gray-700 mb-1">
-                      Employer
-                    </label>
-                    <input
-                      type="text"
-                      id="submitter_employer"
-                      name="submitter_employer"
-                      value={formData.submitter_employer}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="submitter_organization" className="block text-sm font-medium text-gray-700 mb-1">
-                      Organization
-                    </label>
-                    <input
-                      type="text"
-                      id="submitter_organization"
-                      name="submitter_organization"
-                      value={formData.submitter_organization}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Your organization (if different from the job posting organization)"
-                    />
-                  </div>
-                </>
-              )}
             </div>
-          </div>
+          ) : (
+            <div className="pb-6">
+              <h2 className="text-gray-900 mb-4" style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+                fontWeight: 700,
+                letterSpacing: '-0.02em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap'
+              }}>Your Information</h2>
+
+              <div className="space-y-4">
+                {/* Phone Number - Always visible */}
+                <div>
+                  <label htmlFor="submitter_phone" className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      id="submitter_phone"
+                      name="submitter_phone"
+                      required
+                      value={formData.submitter_phone}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="(555) 123-4567"
+                    />
+                    {lookingUp && (
+                      <div className="absolute right-3 top-2">
+                        <div className="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                      </div>
+                    )}
+                  </div>
+                  {lookupData?.found && (
+                    <p className="mt-1 text-sm text-green-600">
+                      Found your information!
+                    </p>
+                  )}
+                </div>
+
+                {/* Rest of fields - Only visible after phone lookup */}
+                {phoneLookupDone && (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="submitter_name" className="block text-sm font-medium text-gray-700 mb-1">
+                          Your Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="submitter_name"
+                          name="submitter_name"
+                          required
+                          value={formData.submitter_name}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="submitter_email" className="block text-sm font-medium text-gray-700 mb-1">
+                          Your Email <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          id="submitter_email"
+                          name="submitter_email"
+                          required
+                          value={formData.submitter_email}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="submitter_date_of_birth" className="block text-sm font-medium text-gray-700 mb-1">
+                          Date of Birth <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="date"
+                          id="submitter_date_of_birth"
+                          name="submitter_date_of_birth"
+                          required
+                          value={formData.submitter_date_of_birth}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="submitter_zip_code" className="block text-sm font-medium text-gray-700 mb-1">
+                          ZIP Code <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="submitter_zip_code"
+                          name="submitter_zip_code"
+                          required
+                          value={formData.submitter_zip_code}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                          maxLength={5}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="submitter_address" className="block text-sm font-medium text-gray-700 mb-1">
+                        Street Address
+                      </label>
+                      <input
+                        type="text"
+                        id="submitter_address"
+                        name="submitter_address"
+                        value={formData.submitter_address}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="submitter_city" className="block text-sm font-medium text-gray-700 mb-1">
+                          City
+                        </label>
+                        <input
+                          type="text"
+                          id="submitter_city"
+                          name="submitter_city"
+                          value={formData.submitter_city}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="submitter_state" className="block text-sm font-medium text-gray-700 mb-1">
+                          State
+                        </label>
+                        <select
+                          id="submitter_state"
+                          name="submitter_state"
+                          value={formData.submitter_state}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="">Select...</option>
+                          <option value="MO">Missouri</option>
+                          <option value="KS">Kansas</option>
+                          <option value="IL">Illinois</option>
+                          <option value="IA">Iowa</option>
+                          <option value="AR">Arkansas</option>
+                          <option value="OK">Oklahoma</option>
+                          <option value="NE">Nebraska</option>
+                          <option value="TN">Tennessee</option>
+                          <option value="KY">Kentucky</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="submitter_employer" className="block text-sm font-medium text-gray-700 mb-1">
+                        Employer
+                      </label>
+                      <input
+                        type="text"
+                        id="submitter_employer"
+                        name="submitter_employer"
+                        value={formData.submitter_employer}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="submitter_organization" className="block text-sm font-medium text-gray-700 mb-1">
+                        Organization
+                      </label>
+                      <input
+                        type="text"
+                        id="submitter_organization"
+                        name="submitter_organization"
+                        value={formData.submitter_organization}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Your organization (if different from the job posting organization)"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Submit Button */}
           <div className="pt-6">
