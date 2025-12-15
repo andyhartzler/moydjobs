@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import CustomQuestionsBuilder, { CustomQuestion } from './CustomQuestionsBuilder'
@@ -55,6 +56,12 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
 
   const router = useRouter()
   const supabase = createClient()
@@ -428,9 +435,20 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
       </form>
 
       {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
+      {showDeleteConfirm && mounted && createPortal(
+        <div
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ zIndex: 99999, isolation: 'isolate' }}
+        >
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setShowDeleteConfirm(false)}
+            style={{ zIndex: 99999 }}
+          />
+          <div
+            className="relative bg-white rounded-lg max-w-md w-full p-6"
+            style={{ zIndex: 100000 }}
+          >
             <h3 className="text-lg font-bold text-gray-900 mb-2">Archive This Listing?</h3>
             <p className="text-gray-600 mb-6">
               This will remove the job posting from the public listing. You can still view it in your dashboard.
@@ -451,7 +469,8 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
