@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import PosterJobCard from '@/components/PosterJobCard'
@@ -26,11 +27,12 @@ export default async function PosterDashboardPage() {
     console.error('Error fetching jobs:', error)
   }
 
-  // Get application counts for each job
+  // Get application counts for each job using admin client to bypass RLS
   let jobsWithCounts = jobs || []
   if (jobs && jobs.length > 0) {
+    const adminClient = createAdminClient()
     const jobIds = jobs.map(j => j.id)
-    const { data: appCounts } = await supabase
+    const { data: appCounts } = await adminClient
       .from('job_applications')
       .select('job_id')
       .in('job_id', jobIds)

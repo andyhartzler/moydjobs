@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import ApplicantCard from '@/components/ApplicantCard'
@@ -32,8 +33,10 @@ export default async function ApplicantsPage({ params }: ApplicantsPageProps) {
     notFound()
   }
 
-  // Get applicants - simplified query without member join
-  const { data: applicants, error: appError } = await supabase
+  // Get applicants using admin client to bypass RLS
+  // Auth check above ensures only the job owner reaches this point
+  const adminClient = createAdminClient()
+  const { data: applicants, error: appError } = await adminClient
     .from('job_applications')
     .select('*')
     .eq('job_id', id)
@@ -64,6 +67,17 @@ export default async function ApplicantsPage({ params }: ApplicantsPageProps) {
             <span>Posted {new Date(job.created_at).toLocaleDateString()}</span>
           </div>
         </div>
+
+        {/* Error Display */}
+        {appError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-800 font-medium">Error loading applicants</p>
+            <p className="text-red-600 text-sm mt-1">{appError.message}</p>
+            <p className="text-red-500 text-xs mt-2">
+              This may be due to Row Level Security (RLS) policies. Please check your Supabase RLS settings for the job_applications table.
+            </p>
+          </div>
+        )}
 
         {/* Applicants */}
         {applicants && applicants.length > 0 ? (
