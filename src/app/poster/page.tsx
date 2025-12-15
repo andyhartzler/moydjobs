@@ -222,12 +222,9 @@ export default function PosterSignInPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter the email you used to submit your job"
+                placeholder="you@example.com"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               />
-              <p className="mt-1 text-sm text-gray-500">
-                Use the same email address you used when submitting your job posting.
-              </p>
             </div>
 
             <button
