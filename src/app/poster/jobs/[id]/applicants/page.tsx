@@ -32,15 +32,16 @@ export default async function ApplicantsPage({ params }: ApplicantsPageProps) {
     notFound()
   }
 
-  // Get applicants
-  const { data: applicants } = await supabase
+  // Get applicants - simplified query without member join
+  const { data: applicants, error: appError } = await supabase
     .from('job_applications')
-    .select(`
-      *,
-      member:members(first_name, last_name, email, phone)
-    `)
+    .select('*')
     .eq('job_id', id)
     .order('created_at', { ascending: false })
+
+  if (appError) {
+    console.error('Error fetching applicants:', appError)
+  }
 
   return (
     <div className="min-h-screen py-12">

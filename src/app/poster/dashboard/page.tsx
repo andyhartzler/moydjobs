@@ -15,7 +15,7 @@ export default async function PosterDashboardPage() {
 
   const userEmail = session.user.email?.toLowerCase()
 
-  // Get all jobs for this poster
+  // Get all jobs for this poster with application counts
   const { data: jobs, error } = await supabase
     .from('jobs')
     .select('*')
@@ -26,8 +26,29 @@ export default async function PosterDashboardPage() {
     console.error('Error fetching jobs:', error)
   }
 
+  // Get application counts for each job
+  let jobsWithCounts = jobs || []
+  if (jobs && jobs.length > 0) {
+    const jobIds = jobs.map(j => j.id)
+    const { data: appCounts } = await supabase
+      .from('job_applications')
+      .select('job_id')
+      .in('job_id', jobIds)
+
+    // Count applications per job
+    const countMap: Record<string, number> = {}
+    appCounts?.forEach(app => {
+      countMap[app.job_id] = (countMap[app.job_id] || 0) + 1
+    })
+
+    jobsWithCounts = jobs.map(job => ({
+      ...job,
+      application_count: countMap[job.id] || 0
+    }))
+  }
+
   // If no jobs found for this email, show message
-  if (!jobs || jobs.length === 0) {
+  if (!jobsWithCounts || jobsWithCounts.length === 0) {
     return (
       <div className="min-h-screen py-12">
         <div className="max-w-4xl mx-auto px-4">
@@ -49,36 +70,41 @@ export default async function PosterDashboardPage() {
     )
   }
 
-  const approvedJobs = jobs.filter(j => j.status === 'approved')
-  const pendingJobs = jobs.filter(j => j.status === 'pending')
-  const otherJobs = jobs.filter(j => !['approved', 'pending'].includes(j.status))
+  const approvedJobs = jobsWithCounts.filter(j => j.status === 'approved')
+  const pendingJobs = jobsWithCounts.filter(j => j.status === 'pending')
+  const otherJobs = jobsWithCounts.filter(j => !['approved', 'pending'].includes(j.status))
+
+  const totalApplications = jobsWithCounts.reduce((sum, j) => sum + (j.application_count || 0), 0)
 
   return (
     <div className="min-h-screen py-12">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8 flex justify-between items-start">
-          <div>
-            <h1 className="text-2xl font-bold text-white uppercase" style={{ letterSpacing: '-0.04em' }}>
-              Your Job Postings
-            </h1>
-            <p className="mt-2 text-white/80">
-              Manage your listings and view applicants
-            </p>
+        {/* Header - responsive layout */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-white uppercase" style={{ letterSpacing: '-0.04em' }}>
+                Your Job Postings
+              </h1>
+              <p className="mt-2 text-white/80">
+                Manage your listings and view applicants
+              </p>
+            </div>
+            <Link
+              href="/submit"
+              className="inline-block px-4 py-2 rounded-md text-white font-medium text-center"
+              style={{ backgroundColor: '#273351' }}
+            >
+              + Post New Job
+            </Link>
           </div>
-          <Link
-            href="/submit"
-            className="px-4 py-2 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700"
-          >
-            + Post New Job
-          </Link>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-500">Total Postings</p>
-            <p className="text-2xl font-bold text-gray-900">{jobs.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{jobsWithCounts.length}</p>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-500">Active</p>
@@ -90,9 +116,7 @@ export default async function PosterDashboardPage() {
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-500">Total Applications</p>
-            <p className="text-2xl font-bold text-blue-600">
-              {jobs.reduce((sum, j) => sum + (j.application_count || 0), 0)}
-            </p>
+            <p className="text-2xl font-bold text-blue-600">{totalApplications}</p>
           </div>
         </div>
 

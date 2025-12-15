@@ -98,7 +98,7 @@ export default function MembersOnlyBanner() {
                 fontWeight: 600
               }}
             >
-              Sign In to View Jobs
+              Sign in to the Member Portal
             </a>
             <span className="text-gray-500 font-medium text-sm">or</span>
             <a
