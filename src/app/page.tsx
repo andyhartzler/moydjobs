@@ -64,6 +64,16 @@ export default async function HomePage() {
             >
               Post an Opportunity
             </Link>
+            <Link
+              href="/poster"
+              className="btn-secondary"
+              style={{
+                fontSize: '1.32rem',
+                padding: '1.18rem 2.36rem'
+              }}
+            >
+              Edit Your Listings
+            </Link>
           </div>
         </div>
       </div>
