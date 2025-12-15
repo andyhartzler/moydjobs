@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -12,8 +12,31 @@ export default function PosterSignInPage() {
   const [verifying, setVerifying] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [checkingSession, setCheckingSession] = useState(true)
   const supabase = createClient()
   const router = useRouter()
+
+  // Check if user is already signed in
+  useEffect(() => {
+    async function checkSession() {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        // Check if they have jobs associated with their email
+        const { data: jobs } = await supabase
+          .from('jobs')
+          .select('id')
+          .eq('submitter_email', session.user.email?.toLowerCase())
+          .limit(1)
+
+        if (jobs && jobs.length > 0) {
+          router.push('/poster/dashboard')
+          return
+        }
+      }
+      setCheckingSession(false)
+    }
+    checkSession()
+  }, [supabase, router])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -77,6 +100,15 @@ export default function PosterSignInPage() {
 
     // Redirect to dashboard on success
     router.push('/poster/dashboard')
+  }
+
+  // Show loading while checking session
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
+      </div>
+    )
   }
 
   if (sent) {
