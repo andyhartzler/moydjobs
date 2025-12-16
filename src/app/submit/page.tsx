@@ -39,6 +39,10 @@ export default function SubmitJobPage() {
     application_instructions: '',
     expires_at: '',
     submitter_organization: '',
+    resume_enabled: true,
+    resume_required: false,
+    cover_letter_enabled: true,
+    cover_letter_required: false,
 
     // Submitter personal info
     submitter_name: '',
@@ -159,6 +163,10 @@ export default function SubmitJobPage() {
             application_instructions: formData.application_instructions,
             expires_at: formData.expires_at || null,
             submitter_organization: formData.submitter_organization,
+            resume_enabled: formData.resume_enabled,
+            resume_required: formData.resume_required,
+            cover_letter_enabled: formData.cover_letter_enabled,
+            cover_letter_required: formData.cover_letter_required,
             custom_questions: customQuestions.length > 0 ? customQuestions : null,
           },
           submitter: {
@@ -604,6 +612,97 @@ export default function SubmitJobPage() {
                 />
                 <p className="mt-1 text-sm text-gray-500">
                   Optional. Job will be automatically removed after this date.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Application Requirements */}
+          <div className="border-b border-gray-200 pb-6">
+            <h2 className="text-gray-900 mb-2" style={{
+              fontFamily: 'Montserrat, sans-serif',
+              fontSize: 'clamp(0.9rem, 4vw, 1.125rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap'
+            }}>Application Requirements</h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Choose what information applicants need to provide when applying.
+            </p>
+
+            <div className="space-y-4">
+              {/* Resume Options */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="resume_enabled"
+                      name="resume_enabled"
+                      checked={formData.resume_enabled}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="resume_enabled" className="ml-2 block text-sm font-medium text-gray-700">
+                      Allow resume upload
+                    </label>
+                  </div>
+                  {formData.resume_enabled && (
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="resume_required"
+                        name="resume_required"
+                        checked={formData.resume_required}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="resume_required" className="ml-2 block text-sm text-gray-600">
+                        Required
+                      </label>
+                    </div>
+                  )}
+                </div>
+                <p className="mt-1 text-xs text-gray-500 ml-6">
+                  Applicants can upload their resume as a PDF or Word document.
+                </p>
+              </div>
+
+              {/* Cover Letter Options */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="cover_letter_enabled"
+                      name="cover_letter_enabled"
+                      checked={formData.cover_letter_enabled}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="cover_letter_enabled" className="ml-2 block text-sm font-medium text-gray-700">
+                      Allow cover letter
+                    </label>
+                  </div>
+                  {formData.cover_letter_enabled && (
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="cover_letter_required"
+                        name="cover_letter_required"
+                        checked={formData.cover_letter_required}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="cover_letter_required" className="ml-2 block text-sm text-gray-600">
+                        Required
+                      </label>
+                    </div>
+                  )}
+                </div>
+                <p className="mt-1 text-xs text-gray-500 ml-6">
+                  Applicants can provide a cover letter as text or upload a document.
                 </p>
               </div>
             </div>
