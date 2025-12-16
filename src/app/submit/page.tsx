@@ -23,7 +23,7 @@ export default function SubmitJobPage() {
     title: '',
     organization: '',
     description: '',
-    job_type: 'full-time',
+    job_type: 'volunteer',
     location: '',
     location_type: 'in-person',
     is_paid: false,
