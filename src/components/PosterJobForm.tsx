@@ -27,6 +27,10 @@ interface PosterJobFormProps {
     application_url?: string
     application_instructions?: string
     expires_at?: string
+    resume_enabled?: boolean
+    resume_required?: boolean
+    cover_letter_enabled?: boolean
+    cover_letter_required?: boolean
     custom_questions?: CustomQuestion[]
   }
 }
@@ -51,6 +55,10 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
     application_url: job.application_url || '',
     application_instructions: job.application_instructions || '',
     expires_at: job.expires_at ? job.expires_at.split('T')[0] : '',
+    resume_enabled: job.resume_enabled ?? true,
+    resume_required: job.resume_required ?? false,
+    cover_letter_enabled: job.cover_letter_enabled ?? true,
+    cover_letter_required: job.cover_letter_required ?? false,
   })
   const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>(job.custom_questions || [])
   const [saving, setSaving] = useState(false)
@@ -405,6 +413,86 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             />
+          </div>
+        </div>
+
+        {/* Application Requirements */}
+        <div className="space-y-4 pt-6 border-t border-gray-200">
+          <div>
+            <h3 className="text-sm font-medium text-gray-900 mb-1">Application Requirements</h3>
+            <p className="text-xs text-gray-500 mb-4">
+              Choose what information applicants need to provide when applying.
+            </p>
+
+            <div className="space-y-3">
+              {/* Resume Options */}
+              <div className="bg-gray-50 rounded-lg p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="resume_enabled"
+                      name="resume_enabled"
+                      checked={formData.resume_enabled}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    />
+                    <label htmlFor="resume_enabled" className="ml-2 text-sm font-medium text-gray-700">
+                      Allow resume upload
+                    </label>
+                  </div>
+                  {formData.resume_enabled && (
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="resume_required"
+                        name="resume_required"
+                        checked={formData.resume_required}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                      />
+                      <label htmlFor="resume_required" className="ml-2 text-sm text-gray-600">
+                        Required
+                      </label>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Cover Letter Options */}
+              <div className="bg-gray-50 rounded-lg p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="cover_letter_enabled"
+                      name="cover_letter_enabled"
+                      checked={formData.cover_letter_enabled}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    />
+                    <label htmlFor="cover_letter_enabled" className="ml-2 text-sm font-medium text-gray-700">
+                      Allow cover letter
+                    </label>
+                  </div>
+                  {formData.cover_letter_enabled && (
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="cover_letter_required"
+                        name="cover_letter_required"
+                        checked={formData.cover_letter_required}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                      />
+                      <label htmlFor="cover_letter_required" className="ml-2 text-sm text-gray-600">
+                        Required
+                      </label>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
