@@ -24,7 +24,7 @@ export default function SubmitJobPage() {
     organization: '',
     description: '',
     job_type: 'volunteer',
-    location: '',
+    location: 'Statewide',
     location_type: 'in-person',
     is_paid: false,
     is_volunteer: false,
