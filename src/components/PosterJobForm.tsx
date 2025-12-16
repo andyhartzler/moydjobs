@@ -24,6 +24,7 @@ interface PosterJobFormProps {
     contact_email: string
     contact_name?: string
     contact_phone?: string
+    use_external_apply?: boolean
     application_url?: string
     application_instructions?: string
     expires_at?: string
@@ -52,6 +53,7 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
     contact_email: job.contact_email,
     contact_name: job.contact_name || '',
     contact_phone: job.contact_phone || '',
+    use_external_apply: job.use_external_apply || false,
     application_url: job.application_url || '',
     application_instructions: job.application_instructions || '',
     expires_at: job.expires_at ? job.expires_at.split('T')[0] : '',
@@ -98,7 +100,12 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
         ...formData,
         application_url: normalizedUrl || null,
         expires_at: formData.expires_at || null,
-        custom_questions: customQuestions.length > 0 ? customQuestions : null,
+        // When using external application, disable internal application requirements
+        resume_enabled: formData.use_external_apply ? false : formData.resume_enabled,
+        resume_required: formData.use_external_apply ? false : formData.resume_required,
+        cover_letter_enabled: formData.use_external_apply ? false : formData.cover_letter_enabled,
+        cover_letter_required: formData.use_external_apply ? false : formData.cover_letter_required,
+        custom_questions: formData.use_external_apply ? null : (customQuestions.length > 0 ? customQuestions : null),
         updated_at: new Date().toISOString(),
       })
       .eq('id', job.id)
@@ -380,20 +387,37 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
             </div>
           </div>
 
-          <div>
-            <label htmlFor="application_url" className="block text-sm font-medium text-gray-700 mb-1">
-              Application URL
-            </label>
+          <div className="flex items-center">
             <input
-              type="text"
-              id="application_url"
-              name="application_url"
-              value={formData.application_url}
+              type="checkbox"
+              id="use_external_apply"
+              name="use_external_apply"
+              checked={formData.use_external_apply}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="example.com or https://example.com"
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
             />
+            <label htmlFor="use_external_apply" className="ml-2 text-sm text-gray-700">
+              Use External Application/Sign up Form
+            </label>
           </div>
+
+          {formData.use_external_apply && (
+            <div>
+              <label htmlFor="application_url" className="block text-sm font-medium text-gray-700 mb-1">
+                Application URL <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="application_url"
+                name="application_url"
+                required
+                value={formData.application_url}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                placeholder="example.com or https://example.com"
+              />
+            </div>
+          )}
 
           <div>
             <label htmlFor="application_instructions" className="block text-sm font-medium text-gray-700 mb-1">
@@ -424,99 +448,103 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
           </div>
         </div>
 
-        {/* Application Requirements */}
-        <div className="space-y-4 pt-6 border-t border-gray-200">
-          <div>
-            <h3 className="text-sm font-medium text-gray-900 mb-1">Application Requirements</h3>
-            <p className="text-xs text-gray-500 mb-4">
-              Choose what information applicants need to provide when applying.
-            </p>
+        {/* Application Requirements - hidden when using external application */}
+        {!formData.use_external_apply && (
+          <div className="space-y-4 pt-6 border-t border-gray-200">
+            <div>
+              <h3 className="text-sm font-medium text-gray-900 mb-1">Application Requirements</h3>
+              <p className="text-xs text-gray-500 mb-4">
+                Choose what information applicants need to provide when applying.
+              </p>
 
-            <div className="space-y-3">
-              {/* Resume Options */}
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="resume_enabled"
-                      name="resume_enabled"
-                      checked={formData.resume_enabled}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    />
-                    <label htmlFor="resume_enabled" className="ml-2 text-sm font-medium text-gray-700">
-                      Allow resume upload
-                    </label>
-                  </div>
-                  {formData.resume_enabled && (
+              <div className="space-y-3">
+                {/* Resume Options */}
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <input
                         type="checkbox"
-                        id="resume_required"
-                        name="resume_required"
-                        checked={formData.resume_required}
+                        id="resume_enabled"
+                        name="resume_enabled"
+                        checked={formData.resume_enabled}
                         onChange={handleChange}
                         className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                       />
-                      <label htmlFor="resume_required" className="ml-2 text-sm text-gray-600">
-                        Required
+                      <label htmlFor="resume_enabled" className="ml-2 text-sm font-medium text-gray-700">
+                        Allow resume upload
                       </label>
                     </div>
-                  )}
+                    {formData.resume_enabled && (
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="resume_required"
+                          name="resume_required"
+                          checked={formData.resume_required}
+                          onChange={handleChange}
+                          className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        />
+                        <label htmlFor="resume_required" className="ml-2 text-sm text-gray-600">
+                          Required
+                        </label>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              {/* Cover Letter Options */}
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="cover_letter_enabled"
-                      name="cover_letter_enabled"
-                      checked={formData.cover_letter_enabled}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    />
-                    <label htmlFor="cover_letter_enabled" className="ml-2 text-sm font-medium text-gray-700">
-                      Allow cover letter
-                    </label>
-                  </div>
-                  {formData.cover_letter_enabled && (
+                {/* Cover Letter Options */}
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <input
                         type="checkbox"
-                        id="cover_letter_required"
-                        name="cover_letter_required"
-                        checked={formData.cover_letter_required}
+                        id="cover_letter_enabled"
+                        name="cover_letter_enabled"
+                        checked={formData.cover_letter_enabled}
                         onChange={handleChange}
                         className="h-4 w-4 text-blue-600 border-gray-300 rounded"
                       />
-                      <label htmlFor="cover_letter_required" className="ml-2 text-sm text-gray-600">
-                        Required
+                      <label htmlFor="cover_letter_enabled" className="ml-2 text-sm font-medium text-gray-700">
+                        Allow cover letter
                       </label>
                     </div>
-                  )}
+                    {formData.cover_letter_enabled && (
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="cover_letter_required"
+                          name="cover_letter_required"
+                          checked={formData.cover_letter_required}
+                          onChange={handleChange}
+                          className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        />
+                        <label htmlFor="cover_letter_required" className="ml-2 text-sm text-gray-600">
+                          Required
+                        </label>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Custom Questions */}
-        <div className="space-y-4 pt-6 border-t border-gray-200">
-          <div>
-            <h3 className="text-sm font-medium text-gray-900 mb-1">Custom Application Questions</h3>
-            <p className="text-xs text-gray-500 mb-4">
-              Add additional questions for applicants to answer when they apply.
-            </p>
-            <CustomQuestionsBuilder
-              questions={customQuestions}
-              onChange={setCustomQuestions}
-            />
+        {/* Custom Questions - hidden when using external application */}
+        {!formData.use_external_apply && (
+          <div className="space-y-4 pt-6 border-t border-gray-200">
+            <div>
+              <h3 className="text-sm font-medium text-gray-900 mb-1">Custom Application Questions</h3>
+              <p className="text-xs text-gray-500 mb-4">
+                Add additional questions for applicants to answer when they apply.
+              </p>
+              <CustomQuestionsBuilder
+                questions={customQuestions}
+                onChange={setCustomQuestions}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Actions */}
         <div className="flex justify-between pt-6 border-t border-gray-200">
