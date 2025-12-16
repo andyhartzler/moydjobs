@@ -776,10 +776,17 @@ export default function SubmitJobPage() {
                       id="submitter_phone"
                       name="submitter_phone"
                       required
+                      inputMode="numeric"
                       value={formData.submitter_phone}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const numbersOnly = e.target.value.replace(/\D/g, '')
+                        setFormData(prev => ({ ...prev, submitter_phone: numbersOnly }))
+                        if (!isSignedInPoster && numbersOnly.length >= 10) {
+                          handlePhoneLookup(numbersOnly)
+                        }
+                      }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="(555) 123-4567"
+                      placeholder="5551234567"
                     />
                     {lookingUp && (
                       <div className="absolute right-3 top-2">
