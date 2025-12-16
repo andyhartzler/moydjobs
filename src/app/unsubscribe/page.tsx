@@ -48,7 +48,7 @@ export default async function UnsubscribePage({ searchParams }: UnsubscribePageP
     if (type === 'job_alerts') {
       const { error } = await supabase
         .from('members')
-        .update({ job_alerts: false })
+        .update({ subscribed_to_job_alerts: false })
         .eq('id', memberId)
 
       if (error) {
