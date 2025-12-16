@@ -23,7 +23,7 @@ export default function SubmitJobPage() {
     title: '',
     organization: '',
     description: '',
-    job_type: 'full-time',
+    job_type: 'volunteer',
     location: '',
     location_type: 'in-person',
     is_paid: false,
@@ -139,6 +139,12 @@ export default function SubmitJobPage() {
     setSubmitting(true)
     setError(null)
 
+    // Normalize application URL - add https:// if missing
+    let normalizedUrl = formData.application_url.trim()
+    if (normalizedUrl && !normalizedUrl.match(/^https?:\/\//i)) {
+      normalizedUrl = 'https://' + normalizedUrl
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke('submit-job', {
         body: {
@@ -159,7 +165,7 @@ export default function SubmitJobPage() {
             contact_email: formData.contact_email,
             contact_name: formData.contact_name,
             contact_phone: formData.contact_phone,
-            application_url: formData.application_url,
+            application_url: normalizedUrl || null,
             application_instructions: formData.application_instructions,
             expires_at: formData.expires_at || null,
             submitter_organization: formData.submitter_organization,
@@ -573,13 +579,13 @@ export default function SubmitJobPage() {
                   Application URL
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   id="application_url"
                   name="application_url"
                   value={formData.application_url}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Link to application form or job posting"
+                  placeholder="example.com or https://example.com"
                 />
               </div>
 
