@@ -16,6 +16,7 @@ interface PosterJobFormProps {
     location?: string
     location_type?: string
     is_paid?: boolean
+    is_volunteer?: boolean
     salary_range?: string
     hourly_rate?: string
     requirements?: string
@@ -39,6 +40,7 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
     location: job.location || '',
     location_type: job.location_type || 'in-person',
     is_paid: job.is_paid || false,
+    is_volunteer: job.is_volunteer || false,
     salary_range: job.salary_range || '',
     hourly_rate: job.hourly_rate || '',
     requirements: job.requirements || '',
@@ -223,18 +225,33 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
 
         {/* Compensation */}
         <div className="space-y-4">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="is_paid"
-              name="is_paid"
-              checked={formData.is_paid}
-              onChange={handleChange}
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-            />
-            <label htmlFor="is_paid" className="ml-2 text-sm text-gray-700">
-              This is a paid position
-            </label>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="is_paid"
+                name="is_paid"
+                checked={formData.is_paid}
+                onChange={handleChange}
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              />
+              <label htmlFor="is_paid" className="ml-2 text-sm text-gray-700">
+                This is a paid position
+              </label>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="is_volunteer"
+                name="is_volunteer"
+                checked={formData.is_volunteer}
+                onChange={handleChange}
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              />
+              <label htmlFor="is_volunteer" className="ml-2 text-sm text-gray-700">
+                This is a volunteer position
+              </label>
+            </div>
           </div>
 
           {formData.is_paid && (
