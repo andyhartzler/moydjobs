@@ -23,9 +23,9 @@ export default function SubmitJobPage() {
     title: '',
     organization: '',
     description: '',
-    job_type: 'volunteer',
+    job_type: '',
     location: 'Statewide',
-    location_type: 'in-person',
+    location_type: '',
     is_paid: false,
     is_volunteer: false,
     salary_range: '',
@@ -353,6 +353,7 @@ export default function SubmitJobPage() {
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   >
+                    <option value="" disabled>- Select -</option>
                     <option value="full-time">Full-Time</option>
                     <option value="part-time">Part-Time</option>
                     <option value="internship">Internship</option>
@@ -373,6 +374,7 @@ export default function SubmitJobPage() {
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   >
+                    <option value="" disabled>- Select -</option>
                     <option value="in-person">In-Person</option>
                     <option value="remote">Remote</option>
                     <option value="hybrid">Hybrid</option>
