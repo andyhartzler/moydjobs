@@ -53,10 +53,10 @@ export default async function HomePage() {
             Connect with opportunities to make a difference in Missouri
           </p>
 
-          <div className="flex flex-wrap gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <Link
               href="/submit"
-              className="btn-primary text-center"
+              className="btn-primary text-center w-full sm:w-auto"
               style={{
                 fontSize: '1.32rem',
                 padding: '1.18rem 2.36rem',
@@ -67,7 +67,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/poster"
-              className="btn-secondary text-center"
+              className="btn-secondary text-center w-full sm:w-auto"
               style={{
                 fontSize: '1.32rem',
                 padding: '1.18rem 2.36rem',
