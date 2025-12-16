@@ -30,12 +30,18 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
   function addQuestion() {
     if (!newQuestion.question?.trim()) return
 
+    // Include any pending option that hasn't been added yet
+    let finalOptions = newQuestion.options || []
+    if (newOption.trim()) {
+      finalOptions = [...finalOptions, newOption.trim()]
+    }
+
     const question: CustomQuestion = {
       id: uuidv4(),
       question: newQuestion.question.trim(),
       type: newQuestion.type || 'text',
       required: newQuestion.required || false,
-      options: newQuestion.options || [],
+      options: finalOptions,
       order: questions.length,
     }
 
@@ -158,6 +164,7 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
                       <div className="flex gap-2">
                         <input
                           type="text"
+                          id={`edit-option-${q.id}`}
                           placeholder="Add option"
                           className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
                           onKeyDown={(e) => {
@@ -184,7 +191,16 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
                   )}
                   <button
                     type="button"
-                    onClick={() => setEditingId(null)}
+                    onClick={() => {
+                      // Save any pending option text before closing
+                      if (needsOptions(q.type)) {
+                        const input = document.getElementById(`edit-option-${q.id}`) as HTMLInputElement
+                        if (input && input.value.trim()) {
+                          addOptionToExisting(q.id, input.value)
+                        }
+                      }
+                      setEditingId(null)
+                    }}
                     className="text-sm text-blue-600 hover:text-blue-700"
                   >
                     Done Editing
@@ -342,7 +358,7 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
           <button
             type="button"
             onClick={addQuestion}
-            disabled={!newQuestion.question?.trim() || (needsOptions(newQuestion.type || 'text') && (!newQuestion.options || newQuestion.options.length === 0))}
+            disabled={!newQuestion.question?.trim() || (needsOptions(newQuestion.type || 'text') && (!newQuestion.options || newQuestion.options.length === 0) && !newOption.trim())}
             className="w-full px-4 py-2 text-sm font-medium text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ backgroundColor: '#273351' }}
           >
