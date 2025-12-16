@@ -72,7 +72,7 @@ export default async function HomePage() {
                 padding: '1.18rem 2.36rem'
               }}
             >
-              Edit Your Listings
+              Manage Your Listings
             </Link>
           </div>
         </div>
