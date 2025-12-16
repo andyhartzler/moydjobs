@@ -86,10 +86,17 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
     setSaving(true)
     setError(null)
 
+    // Normalize application URL - add https:// if missing
+    let normalizedUrl = formData.application_url.trim()
+    if (normalizedUrl && !normalizedUrl.match(/^https?:\/\//i)) {
+      normalizedUrl = 'https://' + normalizedUrl
+    }
+
     const { error: updateError } = await supabase
       .from('jobs')
       .update({
         ...formData,
+        application_url: normalizedUrl || null,
         expires_at: formData.expires_at || null,
         custom_questions: customQuestions.length > 0 ? customQuestions : null,
         updated_at: new Date().toISOString(),
@@ -378,12 +385,13 @@ export default function PosterJobForm({ job }: PosterJobFormProps) {
               Application URL
             </label>
             <input
-              type="url"
+              type="text"
               id="application_url"
               name="application_url"
               value={formData.application_url}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="example.com or https://example.com"
             />
           </div>
 
