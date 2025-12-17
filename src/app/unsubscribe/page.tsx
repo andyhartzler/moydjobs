@@ -67,12 +67,11 @@ export default async function UnsubscribePage({ searchParams }: UnsubscribePageP
       <div className="min-h-screen py-12">
         <div className="max-w-lg mx-auto px-4">
           <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8 text-center">
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-              <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-4">
+              <svg className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h1 className="text-[4vw] sm:text-lg md:text-xl font-bold text-gray-900 mb-2">Unsubscribed!</h1>
             <p className="text-gray-600 mb-6">
               You have been successfully unsubscribed from job alerts. You will no longer receive email notifications about new job postings.
             </p>
