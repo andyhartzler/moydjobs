@@ -20,7 +20,7 @@ export default async function UnsubscribePage({ searchParams }: UnsubscribePageP
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h1 className="text-xs sm:text-lg md:text-xl font-bold text-gray-900 mb-2">Invalid Link</h1>
+            <h1 className="text-[4vw] sm:text-lg md:text-xl font-bold text-gray-900 mb-2">Invalid Link</h1>
             <p className="text-gray-600 mb-6">
               This unsubscribe link is invalid or incomplete.
             </p>
@@ -72,7 +72,7 @@ export default async function UnsubscribePage({ searchParams }: UnsubscribePageP
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h1 className="text-xs sm:text-lg md:text-xl font-bold text-gray-900 mb-2">Unsubscribed!</h1>
+            <h1 className="text-[4vw] sm:text-lg md:text-xl font-bold text-gray-900 mb-2">Unsubscribed!</h1>
             <p className="text-gray-600 mb-6">
               You have been successfully unsubscribed from job alerts. You will no longer receive email notifications about new job postings.
             </p>
@@ -99,7 +99,7 @@ export default async function UnsubscribePage({ searchParams }: UnsubscribePageP
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h1 className="text-xs sm:text-lg md:text-xl font-bold text-gray-900 mb-2">Something Went Wrong</h1>
+          <h1 className="text-[4vw] sm:text-lg md:text-xl font-bold text-gray-900 mb-2">Something Went Wrong</h1>
           <p className="text-gray-600 mb-6">
             We couldn&apos;t process your unsubscribe request. {errorMessage && `Error: ${errorMessage}`}
           </p>
