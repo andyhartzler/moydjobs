@@ -69,6 +69,20 @@ export default function RootLayout({
         {/* Footer */}
         <footer className="relative z-10" style={{ backgroundColor: "#273351" }}>
           <div className="container-custom py-12">
+            {/* Mobile Footer Links - shown above social icons on mobile */}
+            <div className="flex flex-col items-center mb-6 md:hidden" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600, fontSize: "1rem", color: "#32A6DE" }}>
+              <div className="flex items-center justify-center space-x-2">
+                <a href="https://www.moyoungdemocrats.org/terms" className="underline hover:opacity-80 transition-opacity">TERMS OF SERVICE</a>
+                <span>|</span>
+                <a href="https://www.moyoungdemocrats.org/privacy" className="underline hover:opacity-80 transition-opacity">PRIVACY POLICY</a>
+              </div>
+              <div className="flex items-center justify-center space-x-2 mt-2">
+                <a href="https://jobs.moyoungdemocrats.org" className="underline hover:opacity-80 transition-opacity">OPPORTUNITIES</a>
+                <span>|</span>
+                <a href="https://www.moyoungdemocrats.org/contact" className="underline hover:opacity-80 transition-opacity">CONTACT US</a>
+              </div>
+            </div>
+
             {/* Social Media Icons */}
             <div className="flex justify-center items-center space-x-3 md:space-x-6 mb-8">
               <a href="https://www.instagram.com/moyoungdemocrats/#" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
@@ -119,21 +133,56 @@ export default function RootLayout({
             </div>
           </a>
 
-          {/* Paid For Banner */}
-          <a
-            href="https://secure.actblue.com/donate/moyd"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex justify-center py-8"
-          >
-            <Image
-              src="/paid-for-banner.png"
-              alt="Paid for by Missouri Young Democrats"
-              width={400}
-              height={100}
-              className="max-w-full h-auto hover:opacity-80 transition-opacity cursor-pointer"
-            />
-          </a>
+          {/* Paid For Banner with Desktop Links */}
+          <div className="py-8">
+            <div className="hidden md:flex items-end justify-between max-w-6xl mx-auto px-4">
+              {/* Left Links */}
+              <div className="flex items-center space-x-2" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600, fontSize: "1rem", color: "#32A6DE" }}>
+                <a href="https://www.moyoungdemocrats.org/terms" className="underline hover:opacity-80 transition-opacity">TERMS OF SERVICE</a>
+                <span>|</span>
+                <a href="https://www.moyoungdemocrats.org/privacy" className="underline hover:opacity-80 transition-opacity">PRIVACY POLICY</a>
+              </div>
+
+              {/* Center - Paid For Banner */}
+              <a
+                href="https://secure.actblue.com/donate/moyd"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex justify-center"
+              >
+                <Image
+                  src="/paid-for-banner.png"
+                  alt="Paid for by Missouri Young Democrats"
+                  width={400}
+                  height={100}
+                  className="max-w-full h-auto hover:opacity-80 transition-opacity cursor-pointer"
+                />
+              </a>
+
+              {/* Right Links */}
+              <div className="flex items-center space-x-2" style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600, fontSize: "1rem", color: "#32A6DE" }}>
+                <a href="https://jobs.moyoungdemocrats.org" className="underline hover:opacity-80 transition-opacity">OPPORTUNITIES</a>
+                <span>|</span>
+                <a href="https://www.moyoungdemocrats.org/contact" className="underline hover:opacity-80 transition-opacity">CONTACT US</a>
+              </div>
+            </div>
+
+            {/* Mobile - Just the Paid For Banner */}
+            <a
+              href="https://secure.actblue.com/donate/moyd"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex justify-center md:hidden"
+            >
+              <Image
+                src="/paid-for-banner.png"
+                alt="Paid for by Missouri Young Democrats"
+                width={400}
+                height={100}
+                className="max-w-full h-auto hover:opacity-80 transition-opacity cursor-pointer"
+              />
+            </a>
+          </div>
         </footer>
       </body>
     </html>
