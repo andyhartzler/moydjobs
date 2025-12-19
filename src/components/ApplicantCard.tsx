@@ -13,6 +13,13 @@ interface CustomQuestion {
   order: number
 }
 
+interface Reference {
+  name: string
+  email: string
+  phone: string
+  organization: string
+}
+
 interface ApplicantCardProps {
   applicant: {
     id: string
@@ -27,6 +34,7 @@ interface ApplicantCardProps {
     created_at: string
     member_id?: string
     custom_question_responses?: Record<string, string | string[] | boolean>
+    applicant_references?: Reference[]
     member?: {
       first_name: string
       last_name: string
@@ -35,9 +43,10 @@ interface ApplicantCardProps {
     }
   }
   customQuestions?: CustomQuestion[]
+  referencesEnabled?: boolean
 }
 
-export default function ApplicantCard({ applicant, customQuestions }: ApplicantCardProps) {
+export default function ApplicantCard({ applicant, customQuestions, referencesEnabled }: ApplicantCardProps) {
   const [status, setStatus] = useState(applicant.status)
   const [updating, setUpdating] = useState(false)
   const [viewerOpen, setViewerOpen] = useState(false)
@@ -150,6 +159,35 @@ export default function ApplicantCard({ applicant, customQuestions }: ApplicantC
                   </div>
                 )
               })}
+          </div>
+        </div>
+      )}
+
+      {/* References */}
+      {referencesEnabled && applicant.applicant_references && applicant.applicant_references.length > 0 && (
+        <div className="mb-4 border-t border-gray-100 pt-4">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">References</h4>
+          <div className="space-y-3">
+            {applicant.applicant_references.map((reference, index) => (
+              <div key={index} className="bg-gray-50 rounded-md p-3">
+                <p className="text-sm font-medium text-gray-900">{reference.name}</p>
+                {reference.organization && (
+                  <p className="text-sm text-gray-600">{reference.organization}</p>
+                )}
+                <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
+                  {reference.email && (
+                    <a href={`mailto:${reference.email}`} className="hover:text-blue-600">
+                      {reference.email}
+                    </a>
+                  )}
+                  {reference.phone && (
+                    <a href={`tel:${reference.phone}`} className="hover:text-blue-600">
+                      {reference.phone}
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

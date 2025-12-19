@@ -87,6 +87,7 @@ export default async function ApplicantsPage({ params }: ApplicantsPageProps) {
                 key={applicant.id}
                 applicant={applicant}
                 customQuestions={job.custom_questions || []}
+                referencesEnabled={job.references_enabled || false}
               />
             ))}
           </div>
