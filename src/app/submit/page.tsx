@@ -44,6 +44,9 @@ export default function SubmitJobPage() {
     resume_required: false,
     cover_letter_enabled: true,
     cover_letter_required: false,
+    references_enabled: false,
+    references_required: false,
+    references_count: 2,
 
     // Submitter personal info
     submitter_name: '',
@@ -175,6 +178,9 @@ export default function SubmitJobPage() {
             resume_required: formData.use_external_apply ? false : formData.resume_required,
             cover_letter_enabled: formData.use_external_apply ? false : formData.cover_letter_enabled,
             cover_letter_required: formData.use_external_apply ? false : formData.cover_letter_required,
+            references_enabled: formData.use_external_apply ? false : formData.references_enabled,
+            references_required: formData.use_external_apply ? false : formData.references_required,
+            references_count: formData.use_external_apply ? null : (formData.references_enabled ? formData.references_count : null),
             custom_questions: formData.use_external_apply ? null : (customQuestions.length > 0 ? customQuestions : null),
           },
           submitter: {
@@ -731,6 +737,65 @@ export default function SubmitJobPage() {
                   </div>
                   <p className="mt-1 text-xs text-gray-500 ml-6">
                     Applicants can provide a cover letter as text or upload a document.
+                  </p>
+                </div>
+
+                {/* References Options */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="references_enabled"
+                        name="references_enabled"
+                        checked={formData.references_enabled}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="references_enabled" className="ml-2 block text-sm font-medium text-gray-700">
+                        Allow reference fields
+                      </label>
+                    </div>
+                    {formData.references_enabled && (
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            id="references_required"
+                            name="references_required"
+                            checked={formData.references_required}
+                            onChange={handleChange}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <label htmlFor="references_required" className="ml-2 block text-sm text-gray-600">
+                            Required
+                          </label>
+                        </div>
+                        {formData.references_required && (
+                          <div className="flex items-center">
+                            <label htmlFor="references_count" className="text-sm text-gray-600 mr-2">
+                              Number required:
+                            </label>
+                            <select
+                              id="references_count"
+                              name="references_count"
+                              value={formData.references_count}
+                              onChange={handleChange}
+                              className="text-sm border border-gray-300 rounded-md px-2 py-1"
+                            >
+                              <option value={1}>1</option>
+                              <option value={2}>2</option>
+                              <option value={3}>3</option>
+                              <option value={4}>4</option>
+                              <option value={5}>5</option>
+                            </select>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500 ml-6">
+                    Applicants can provide professional references with contact information.
                   </p>
                 </div>
               </div>
