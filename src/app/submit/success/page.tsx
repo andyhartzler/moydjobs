@@ -28,6 +28,13 @@ export default function SubmitSuccessPage() {
           >
             Post Another Opportunity
           </Link>
+          <Link
+            href="/poster"
+            className="block w-full px-4 py-3 rounded-md font-medium text-white"
+            style={{ backgroundColor: '#273351' }}
+          >
+            Manage Your Listings
+          </Link>
         </div>
       </div>
     </div>
