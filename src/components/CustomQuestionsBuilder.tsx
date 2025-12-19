@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 export interface CustomQuestion {
@@ -19,6 +19,7 @@ interface CustomQuestionsBuilderProps {
 
 export default function CustomQuestionsBuilder({ questions, onChange }: CustomQuestionsBuilderProps) {
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [draftId, setDraftId] = useState<string | null>(null) // Track the current draft question in the list
   const [newQuestion, setNewQuestion] = useState<Partial<CustomQuestion>>({
     question: '',
     type: 'text',
@@ -27,25 +28,58 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
   })
   const [newOption, setNewOption] = useState('')
 
-  function addQuestion() {
-    if (!newQuestion.question?.trim()) return
+  const needsOptions = useCallback((type: string) => ['select', 'checkbox', 'radio'].includes(type), [])
 
-    // Include any pending option that hasn't been added yet
+  // Check if the current draft is valid and complete
+  const isDraftValid = useCallback(() => {
+    if (!newQuestion.question?.trim()) return false
+    if (needsOptions(newQuestion.type || 'text')) {
+      // Count options including any pending option text
+      const optionCount = (newQuestion.options?.length || 0) + (newOption.trim() ? 1 : 0)
+      return optionCount > 0
+    }
+    return true
+  }, [newQuestion, newOption, needsOptions])
+
+  // Auto-save draft question to the list whenever it becomes valid
+  useEffect(() => {
+    if (!isDraftValid()) {
+      // If draft is no longer valid and we have a draft in the list, remove it
+      if (draftId) {
+        onChange(questions.filter(q => q.id !== draftId).map((q, i) => ({ ...q, order: i })))
+        setDraftId(null)
+      }
+      return
+    }
+
+    // Include any pending option
     let finalOptions = newQuestion.options || []
     if (newOption.trim()) {
       finalOptions = [...finalOptions, newOption.trim()]
     }
 
-    const question: CustomQuestion = {
-      id: uuidv4(),
-      question: newQuestion.question.trim(),
+    const draftQuestion: CustomQuestion = {
+      id: draftId || uuidv4(),
+      question: newQuestion.question!.trim(),
       type: newQuestion.type || 'text',
       required: newQuestion.required || false,
       options: finalOptions,
-      order: questions.length,
+      order: draftId ? questions.find(q => q.id === draftId)?.order ?? questions.length : questions.length,
     }
 
-    onChange([...questions, question])
+    if (draftId) {
+      // Update existing draft in the list
+      onChange(questions.map(q => q.id === draftId ? draftQuestion : q))
+    } else {
+      // Add new draft to the list
+      setDraftId(draftQuestion.id)
+      onChange([...questions, draftQuestion])
+    }
+  }, [newQuestion.question, newQuestion.type, newQuestion.required, newQuestion.options, newOption])
+
+  function startNewQuestion() {
+    // Clear the form to start a new question (the current one is already saved)
+    setDraftId(null)
     setNewQuestion({
       question: '',
       type: 'text',
@@ -56,6 +90,16 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
   }
 
   function removeQuestion(id: string) {
+    if (id === draftId) {
+      setDraftId(null)
+      setNewQuestion({
+        question: '',
+        type: 'text',
+        required: false,
+        options: [],
+      })
+      setNewOption('')
+    }
     onChange(questions.filter(q => q.id !== id).map((q, i) => ({ ...q, order: i })))
   }
 
@@ -104,15 +148,16 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
     updateQuestion(questionId, { options: question.options.filter((_, i) => i !== index) })
   }
 
-  const needsOptions = (type: string) => ['select', 'checkbox', 'radio'].includes(type)
+  // Filter out the current draft from the display list (it's shown in the form below)
+  const savedQuestions = questions.filter(q => q.id !== draftId)
 
   return (
     <div className="space-y-6">
-      {/* Existing Questions */}
-      {questions.length > 0 && (
+      {/* Saved Questions */}
+      {savedQuestions.length > 0 && (
         <div className="space-y-4">
           <h4 className="text-sm font-medium text-gray-700">Added Questions</h4>
-          {questions.map((q, index) => (
+          {savedQuestions.map((q, index) => (
             <div key={q.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
               {editingId === q.id ? (
                 // Editing mode
@@ -241,7 +286,7 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
                     <button
                       type="button"
                       onClick={() => moveQuestion(q.id, 'down')}
-                      disabled={index === questions.length - 1}
+                      disabled={index === savedQuestions.length - 1}
                       className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -276,7 +321,19 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
 
       {/* Add New Question */}
       <div className="border border-dashed border-gray-300 rounded-lg p-4">
-        <h4 className="text-sm font-medium text-gray-700 mb-3">Add a Question</h4>
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-medium text-gray-700">
+            {draftId ? 'Current Question' : 'Add a Question'}
+          </h4>
+          {isDraftValid() && (
+            <span className="text-xs text-green-600 flex items-center">
+              <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Auto-saved
+            </span>
+          )}
+        </div>
         <div className="space-y-3">
           <input
             type="text"
@@ -355,15 +412,16 @@ export default function CustomQuestionsBuilder({ questions, onChange }: CustomQu
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={addQuestion}
-            disabled={!newQuestion.question?.trim() || (needsOptions(newQuestion.type || 'text') && (!newQuestion.options || newQuestion.options.length === 0) && !newOption.trim())}
-            className="w-full px-4 py-2 text-sm font-medium text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#273351' }}
-          >
-            Add Question
-          </button>
+          {isDraftValid() && (
+            <button
+              type="button"
+              onClick={startNewQuestion}
+              className="w-full px-4 py-2 text-sm font-medium text-white rounded-md"
+              style={{ backgroundColor: '#273351' }}
+            >
+              + Add Another Question
+            </button>
+          )}
         </div>
       </div>
     </div>
