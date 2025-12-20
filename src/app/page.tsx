@@ -50,7 +50,7 @@ export default async function HomePage() {
             fontWeight: 500,
             maxWidth: '800px'
           }}>
-            Connect with opportunities to make a difference in Missouri
+            Share opportunities with members of the Missouri Young Democrats
           </p>
 
           <div className="flex flex-wrap gap-4 mb-8">
