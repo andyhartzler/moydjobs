@@ -21,11 +21,12 @@ export default function PosterSignInPage() {
     async function checkSession() {
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
-        // Check if they have jobs associated with their email
+        // Check if they have jobs associated with their email (submitter OR contact)
+        const userEmail = session.user.email?.toLowerCase()
         const { data: jobs } = await supabase
           .from('jobs')
           .select('id')
-          .eq('submitter_email', session.user.email?.toLowerCase())
+          .or(`submitter_email.ilike.${userEmail},contact_email.ilike.${userEmail}`)
           .limit(1)
 
         if (jobs && jobs.length > 0) {
@@ -43,11 +44,12 @@ export default function PosterSignInPage() {
     setLoading(true)
     setError(null)
 
-    // First check if this email has any jobs
+    // First check if this email has any jobs (as submitter OR contact)
+    const normalizedEmail = email.toLowerCase()
     const { data: jobs, error: jobError } = await supabase
       .from('jobs')
       .select('id')
-      .eq('submitter_email', email.toLowerCase())
+      .or(`submitter_email.ilike.${normalizedEmail},contact_email.ilike.${normalizedEmail}`)
       .limit(1)
 
     if (jobError) {
@@ -57,7 +59,7 @@ export default function PosterSignInPage() {
     }
 
     if (!jobs || jobs.length === 0) {
-      setError('No job postings found for this email address. Please use the email you submitted your job posting with.')
+      setError('No job postings found for this email address. Please use the email you submitted your job posting with, or the contact email listed on a posting.')
       setLoading(false)
       return
     }

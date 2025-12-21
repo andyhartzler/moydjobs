@@ -14,18 +14,44 @@ export default async function PosterDashboardPage() {
     redirect('/poster')
   }
 
-  const userEmail = session.user.email?.toLowerCase()
+  const userEmail = session.user.email?.toLowerCase() || ''
 
-  // Get all jobs for this poster with application counts
-  const { data: jobs, error } = await supabase
+  // Implement transitive email association:
+  // 1. Find jobs where user's email matches submitter_email OR contact_email
+  // 2. Collect ALL unique emails from those jobs
+  // 3. Find ALL jobs where ANY of those emails appear
+
+  const { data: allJobs, error } = await supabase
     .from('jobs')
     .select('*')
-    .eq('submitter_email', userEmail)
     .order('created_at', { ascending: false })
 
   if (error) {
     console.error('Error fetching jobs:', error)
   }
+
+  // Step 1: Find jobs directly associated with user's email
+  const directJobs = (allJobs || []).filter(job =>
+    job.submitter_email?.toLowerCase() === userEmail ||
+    job.contact_email?.toLowerCase() === userEmail
+  )
+
+  // Step 2: Collect ALL emails from direct jobs
+  const associatedEmails = new Set<string>()
+  directJobs.forEach(job => {
+    if (job.submitter_email) {
+      associatedEmails.add(job.submitter_email.toLowerCase())
+    }
+    if (job.contact_email) {
+      associatedEmails.add(job.contact_email.toLowerCase())
+    }
+  })
+
+  // Step 3: Filter all jobs that have ANY of the associated emails
+  const jobs = (allJobs || []).filter(job =>
+    (job.submitter_email && associatedEmails.has(job.submitter_email.toLowerCase())) ||
+    (job.contact_email && associatedEmails.has(job.contact_email.toLowerCase()))
+  )
 
   // Get application counts for each job using admin client to bypass RLS
   let jobsWithCounts = jobs || []
